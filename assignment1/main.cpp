@@ -168,7 +168,27 @@ public:
 	}
 
 	int run1(){
-		return 0;
+		int count = 1;
+
+		forward();
+
+		while(true) {
+			count++;
+			int s = sensor();
+			if((s & Dirt) != 0) {
+				suck();
+			} else if((s & Wall) != 0) {
+				right();
+			} else if((s & Home) != 0) {
+				return count;
+			} else {
+				forward();
+			}
+			cout << count << endl;
+			display();
+			cin.get();
+			cout << endl;
+		}
 	}
 
 	int run2(){
@@ -252,7 +272,7 @@ int main(int argc, char const *argv[]) {
 	// a.forward();
 	// a.display();
 	// a.sensor();
-	a.run3();
+	a.run1();
 	r.set_values(6,6,50);
 	r.display();
 	return 0;
