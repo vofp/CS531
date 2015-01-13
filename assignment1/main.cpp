@@ -191,7 +191,12 @@ public:
 		while(true) {
 			count++;
 			int s = sensor();
-			if(memory == 1) {
+			if((s & Dirt) != 0) {
+				suck();
+			} else if(memory == 0 && (s & Wall) != 0) {
+				right();
+				memory = 1;
+			} else if(memory == 1) {
 				if((s & Wall) != 0) {
 					right();
 					memory = 6;
@@ -202,6 +207,9 @@ public:
 			} else if(memory == 2) {
 				right();
 				memory = 3;
+			} else if(memory == 3 && (s & Wall) != 0) {
+				left();
+				memory = 4;
 			} else if(memory == 4) {
 				if((s & Wall) != 0) {
 					right();
@@ -213,26 +221,11 @@ public:
 			} else if(memory == 5) {
 				left();
 				memory = 0;
-			} else if((s & Dirt) != 0) {
-				suck();
-			} else if((s & Home) != 0) {
-				if(memory == 7) {
-					return count;
-				}
-				forward();
-			} else if((s & Wall) != 0) {
-				if(memory == 0) {
-					right();
-					memory = 1;
-				} else if(memory == 3) {
-					left();
-					memory = 4;
-				} else if(memory == 6) {
-					right();
-					memory = 7;
-				}
-				cout << "wall" << endl;
-				// return 0;
+			} else if(memory == 6 && (s & Wall) != 0) {
+				right();
+				memory = 7;
+			} else if(memory == 7 && (s & Home) != 0) {
+				return count;
 			} else {
 				forward();
 			}
