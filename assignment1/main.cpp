@@ -172,14 +172,14 @@ public:
 	}
 
 	int run2(){
-		int count = 0;
-		while(true) {
-			count++;
-			if((s & Home) != 0) {
-				return count;
-			}
-		}
-		return 0;
+		// int count = 0;
+		// while(true) {
+		// 	count++;
+		// 	if((s & Home) != 0) {
+		// 		return count;
+		// 	}
+		// }
+		// return 0;
 	}
 
 	int run3(){
