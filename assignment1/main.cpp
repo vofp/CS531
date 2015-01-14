@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <ctime>
 using namespace std;
 
 class Room {
@@ -8,18 +9,25 @@ public:
 	int width;
 	int prob;
 	int **dirt;
+	// int dirt_count;
 
 	int set_values (int x, int y, int p) {
 		width = x;
 		length = y;
 		prob = p;
 		dirt = new int*[width];
-		srand (1337);
+		// dirt_count = 0;
+		// srand (s);
 		for (int i = 0; i < width; ++i) {
 			dirt[i] = new int[length];
 			for (int j = 0; j < length; ++j) {
 				int r = rand() % 100;
-				dirt[i][j] = r > p ? 0 : 1 ;
+				if(r > p){
+					dirt[i][j] = 0;
+				}else{
+					dirt[i][j] = 1;
+					// dirt_count++;
+				}
 			}
 		}
 		return 0;
@@ -33,7 +41,22 @@ public:
 		}
 		return 0;
 	}
+	int dirt_count(){
+		int count = 0;
+		for (int i = 0; i < width; ++i) {
+			for (int j = 0; j < length; ++j) {
+				if (dirt[i][j])
+				{
+					count++;
+				}
+			}
+		}
+		return count;
+	}
 	int clean(int x, int y){
+		if(dirt[x][y] == 1){
+			// dirt_count -= 1;
+		}
 		dirt[x][y] = 0;
 		return 0;
 	}
@@ -99,6 +122,7 @@ public:
 	}
 	int suck(){
 		r.clean(loc_x, loc_y);
+		// r.dirt_count -= 1;
 		return 0;
 	}
 	int off(){
@@ -170,36 +194,49 @@ public:
 	int run1(){
 		int count = 1;
 
-		forward();
-
 		while(true) {
 			count++;
 			int s = sensor();
 			if((s & Dirt) != 0) {
 				suck();
+			} else if(((s & Home) != 0) && ((s & Wall) != 0)) {
+				return count;
 			} else if((s & Wall) != 0) {
 				right();
-			} else if((s & Home) != 0) {
-				return count;
 			} else {
 				forward();
 			}
-			cout << count << endl;
-			display();
-			cin.get();
-			cout << endl;
 		}
 	}
 
 	int run2(){
-		// int count = 0;
-		// while(true) {
-		// 	count++;
-		// 	if((s & Home) != 0) {
-		// 		return count;
-		// 	}
-		// }
-		// return 0;
+		int count = 1;
+		// srand (time(NULL));
+		while(true) {
+			count++;
+			int s = sensor();
+			if((s & Dirt) != 0) {
+				suck();
+			} else if(((s & Home) != 0) && ((s & Wall) != 0)) {
+				return count;
+			} else if((s & Wall) != 0) {
+				int r = rand() % 100;
+				if(r < 50){
+					right();
+				}else{
+					left();
+				}
+			} else {
+				int r = rand() % 100;
+				if(r < 50){
+					forward();
+				}else if(r < 75){
+					left();
+				}else{
+					right();
+				}
+			}
+		}
 	}
 
 	int run3(){
@@ -249,11 +286,6 @@ public:
 			} else {
 				forward();
 			}
-			cout << count << endl;
-			cout << memory << endl;
-			display();
-			cin.get();
-			cout << endl;
 		}
 		return 0;
 	}
@@ -261,19 +293,56 @@ public:
 
 
 int main(int argc, char const *argv[]) {
-	cout << "test" << endl;
+	// cout << "test" << endl;
+	srand (time(NULL));
+	int n = atoi(argv[1]);
+	int m = atoi(argv[2]);
+	int p = atoi(argv[3]);
+
+	// int s = rand() % 10000;
 	Room r;
-	r.set_values(6,6,50);
-	r.display();
-	cout << "Agent" << endl;
-	Agent a;
-	a.set_room(r);
-	// a.right();
-	// a.forward();
-	// a.display();
-	// a.sensor();
-	a.run1();
-	r.set_values(6,6,50);
-	r.display();
+
+	int clean_count1 = 0;
+	float clean_count2 = 0;
+	int clean_count3 = 0;
+
+	int action_count1 = 0;
+	float action_count2 = 0;
+	int action_count3 = 0;
+
+	for (int i = 0; i < 100; ++i)
+	{
+		r.set_values(n,m,p);
+		int dirt_count = r.dirt_count();
+		Agent a;
+		a.set_room(r);
+		action_count1 += a.run1();
+		clean_count1 += dirt_count - r.dirt_count();
+		// cout << n << ", " << m << ", " << p << ", 1, " << action_count << ", " << dirt_count - r.dirt_count() << endl;
+
+		r.set_values(n,m,p);
+		dirt_count = r.dirt_count();
+		a.set_room(r);
+		action_count3 += a.run3();
+		clean_count3 += dirt_count - r.dirt_count();
+		// cout << n << ", " << m << ", " << p << ", 3, " << action_count << ", " << dirt_count - r.dirt_count() << endl;
+
+		int clean_count_temp = 0;
+		int action_count_temp = 0;
+		for (int i = 0; i < 100; ++i){
+			r.set_values(n,m,p);
+			dirt_count = r.dirt_count();
+			a.set_room(r);
+			action_count_temp += a.run2();
+			clean_count_temp += dirt_count - r.dirt_count();
+		}
+		clean_count2 += clean_count_temp / 100.0;
+		action_count2 += action_count_temp / 100.0;
+		// cout << n << ", " << m << ", " << p << ", 2, " << action_count/100.0 << ", " << clean_count/100.0 << endl;
+	}
+	cout << n << ", " << m << ", " << p << ", 1, " << action_count1/100.0 << ", " << clean_count1/100.0 << endl;
+	cout << n << ", " << m << ", " << p << ", 2, " << action_count2/100.0 << ", " << clean_count2/100.0 << endl;
+	cout << n << ", " << m << ", " << p << ", 3, " << action_count3/100.0 << ", " << clean_count3/100.0 << endl;
+
 	return 0;
 }
