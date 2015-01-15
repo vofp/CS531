@@ -22,7 +22,7 @@ public:
 			dirt[i] = new int[length];
 			for (int j = 0; j < length; ++j) {
 				int r = rand() % 100;
-				if(r > p){
+				if(r >= p){
 					dirt[i][j] = 0;
 				}else{
 					dirt[i][j] = 1;
