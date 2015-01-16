@@ -29,21 +29,41 @@ Agents-overview. Memory restrictions
 Environment specifics
 
 \section{Agents}
+Describe the idea behind the design of each of your agents. Use diagrams and english as appropriate.
 \subsection{Memory-less Deterministic Reflex Agent}
 What is the best possible performance achievable by any memory-less reflex agent in this domain? What prevents a memory-less reflex agent from doing very well in this task?
 \subsubsection{Design}
-Describe the idea behind the design of each of your agents. Use diagrams and english as appropriate.
 \subsubsection{If-then Rules}
+if dirt then suck
+else if wall then turn right
+else forward
+
 
 \subsection{Random Reflex Agent}
 How well does the random agent perform? Do you think that this is the best possible performance achievable by any random agent? Why or why not? Give a table showing the number of actions it took to clean 90\% of the room for each trial. What is the average of these numbers for the best 45 trials? What are the costs and benefits of randomness in agent design?
 \subsubsection{Design}
 \subsubsection{If-then Rules}
+if dirt then suck
+else if wall then turn-right 0.5 turn-left 0.5
+else forward 0.5 turn-right 0.25 turn-left 0.25
+
 
 \subsection{Memory-Based Deteministic Reflex Agent}
 How does the memory-based deterministic agent perform compared to the random agent? Was it able to completely clean the room? Was it able to shut itself off after it is done? If it did, how many actions did it take to do this? Can the agent be improved any further with more memory than you used? Why or why not?
 \subsubsection{Design}
 \subsubsection{If-then Rules}
+if dirt then suck
+else if state0 and wall then turn-right set-state1
+else if state1 and wall then turn-right set-state6
+else if state1 and not all then forward set-state2
+else if state2 then turn-right set-state 3
+else if state3 and wall then turn-left set-state4
+else if state4 and wall then turn-right set-state6
+else if state4 and not wall then forward set-state5
+else if state5 then turn-left state-state0
+else if state6 and wall then turn-right set-state7
+else if state7 and home then off
+
 
 \section{Results}
 Plots, discuss plots.
