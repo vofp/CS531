@@ -287,7 +287,7 @@ public:
 				forward();
 			}
 		//	display();
-			cout << endl;
+		//	cout << endl;
 		}
 		return 0;
 	}
