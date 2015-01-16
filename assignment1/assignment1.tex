@@ -8,28 +8,49 @@
 
 \begin{document}
 \maketitle
+\{abstract}
+Our goal was to study to preformance of different types of agents; Memory-less Deterministic Reflex Agent, Random Reflex Agent and Memory-Based Deteministic Reflex Agent.
+We will measure the performance based on number of cleaned cells vs the number of actions taken.
+The environment is a n X m empty rectangular room with p\% chance of containing dirt.
+The agents have 5 actions; go forward, turn right by 90 degrees, turn left by 90 degrees, suck up dirt, and turn off.
+The agents also have 3 sensor to interact with the room; a wall sensor, a dirt sensor, and a home sensor.
+The memory-less Deterministic Reflex Agent
 
 \section{Introduction}
-Our goal was to study to preformance of different types of agents; Memory-less Deterministic Reflex Agent, Random Reflex Agent and Memory-Based Deteministic Reflex Agent. 
-We will measure the performance based on number of cleaned cells vs the number of actions taken. 
-The environment is a n X m empty rectangular room with p\% chance of containing dirt. 
-The agents have 5 actions; go forward, turn right by 90 degrees, turn left by 90 degrees, suck up dirt, and turn off. 
-The agents also have 3 sensor to interact with the room; a wall sensor, a dirt sensor, and a home sensor. 
-The memory-less Deterministic Reflex Agent 
+AI background
+Generic vacuum problem
+Environment, partially observable, deterministic, single agent, sequential, discrete, known.
+Agents-overview. Memory restrictions
+
+
+
+
+\section{Problem Formulation}
+Environment specifics
 
 \section{Agents}
 \subsection{Memory-less Deterministic Reflex Agent}
+What is the best possible performance achievable by any memory-less reflex agent in this domain? What prevents a memory-less reflex agent from doing very well in this task?
 \subsubsection{Design}
+Describe the idea behind the design of each of your agents. Use diagrams and english as appropriate.
 \subsubsection{If-then Rules}
 
 \subsection{Random Reflex Agent}
+How well does the random agent perform? Do you think that this is the best possible performance achievable by any random agent? Why or why not? Give a table showing the number of actions it took to clean 90\% of the room for each trial. What is the average of these numbers for the best 45 trials? What are the costs and benefits of randomness in agent design?
 \subsubsection{Design}
 \subsubsection{If-then Rules}
 
 \subsection{Memory-Based Deteministic Reflex Agent}
+How does the memory-based deterministic agent perform compared to the random agent? Was it able to completely clean the room? Was it able to shut itself off after it is done? If it did, how many actions did it take to do this? Can the agent be improved any further with more memory than you used? Why or why not?
 \subsubsection{Design}
 \subsubsection{If-then Rules}
 
-\section{Learn}
+\section{Results}
+Plots, discuss plots.
+Plot 1- \%final dirt vs \% starting dirt
+Plot 2- dirt per action vs \% starting dirt
+Plot 3- \# clean cells vs \# actions taken
 
-\end{document}          
+\section{Conclusion}
+What did you learn from this experiment? Were you surprised by anything?
+\end{document}

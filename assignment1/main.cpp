@@ -286,6 +286,8 @@ public:
 			} else {
 				forward();
 			}
+			display();
+			cout << endl;
 		}
 		return 0;
 	}
@@ -310,7 +312,7 @@ int main(int argc, char const *argv[]) {
 	float action_count2 = 0;
 	int action_count3 = 0;
 
-	for (int i = 0; i < 100; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		r.set_values(n,m,p);
 		int dirt_count = r.dirt_count();
