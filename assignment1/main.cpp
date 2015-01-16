@@ -286,7 +286,7 @@ public:
 			} else {
 				forward();
 			}
-			display();
+		//	display();
 			cout << endl;
 		}
 		return 0;
@@ -311,11 +311,16 @@ int main(int argc, char const *argv[]) {
 	int action_count1 = 0;
 	float action_count2 = 0;
 	int action_count3 = 0;
-
-	for (int i = 0; i < 1; ++i)
+	int ave_dirt_count_a1 = 0;
+	int ave_dirt_count_a2 = 0;
+	int ave_dirt_count_a3 = 0;
+	int iter = 100;
+	int a2_iter = 100;
+	for (int i = 0; i < iter; ++i)
 	{
 		r.set_values(n,m,p);
 		int dirt_count = r.dirt_count();
+		ave_dirt_count_a1 += dirt_count;
 		Agent a;
 		a.set_room(r);
 		action_count1 += a.run1();
@@ -324,6 +329,7 @@ int main(int argc, char const *argv[]) {
 
 		r.set_values(n,m,p);
 		dirt_count = r.dirt_count();
+		ave_dirt_count_a3 += dirt_count;
 		a.set_room(r);
 		action_count3 += a.run3();
 		clean_count3 += dirt_count - r.dirt_count();
@@ -331,20 +337,22 @@ int main(int argc, char const *argv[]) {
 
 		int clean_count_temp = 0;
 		int action_count_temp = 0;
-		for (int i = 0; i < 100; ++i){
+		int ave_dirt_a2_temp = 0;
+		for (int j = 0; j < a2_iter; ++j){
 			r.set_values(n,m,p);
 			dirt_count = r.dirt_count();
+			ave_dirt_a2_temp += dirt_count;
 			a.set_room(r);
 			action_count_temp += a.run2();
 			clean_count_temp += dirt_count - r.dirt_count();
 		}
-		clean_count2 += clean_count_temp / 100.0;
-		action_count2 += action_count_temp / 100.0;
+		ave_dirt_count_a2 += ave_dirt_a2_temp/a2_iter;
+		clean_count2 += clean_count_temp / a2_iter;
+		action_count2 += action_count_temp / a2_iter;
 		// cout << n << ", " << m << ", " << p << ", 2, " << action_count/100.0 << ", " << clean_count/100.0 << endl;
 	}
-	cout << n << ", " << m << ", " << p << ", 1, " << action_count1/100.0 << ", " << clean_count1/100.0 << endl;
-	cout << n << ", " << m << ", " << p << ", 2, " << action_count2/100.0 << ", " << clean_count2/100.0 << endl;
-	cout << n << ", " << m << ", " << p << ", 3, " << action_count3/100.0 << ", " << clean_count3/100.0 << endl;
-
+	cout << n << ", " << m << ", " << p << ", 1, " << action_count1/iter << ", " << clean_count1/iter << ", " << ave_dirt_count_a1/(iter*1.0) << endl;
+	cout << n << ", " << m << ", " << p << ", 2, " << action_count2/iter << ", " << clean_count2/iter << ", " << ave_dirt_count_a2/(iter*1.0) << endl;
+	cout << n << ", " << m << ", " << p << ", 3, " << action_count3/iter << ", " << clean_count3/iter << ", " << ave_dirt_count_a3/(iter*1.0) << endl;
 	return 0;
 }
