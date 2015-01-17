@@ -351,8 +351,8 @@ int main(int argc, char const *argv[]) {
 		action_count2 += action_count_temp / a2_iter;
 		// cout << n << ", " << m << ", " << p << ", 2, " << action_count/100.0 << ", " << clean_count/100.0 << endl;
 	}
-	cout << n << ", " << m << ", " << p << ", 1, " << action_count1/iter << ", " << clean_count1/iter << ", " << ave_dirt_count_a1/(iter*1.0) << endl;
-	cout << n << ", " << m << ", " << p << ", 2, " << action_count2/iter << ", " << clean_count2/iter << ", " << ave_dirt_count_a2/(iter*1.0) << endl;
-	cout << n << ", " << m << ", " << p << ", 3, " << action_count3/iter << ", " << clean_count3/iter << ", " << ave_dirt_count_a3/(iter*1.0) << endl;
+	cout << n << ", " << m << ", " << p << ", 1, " << action_count1/(iter*1.0)  << ", " << clean_count1/(iter*1.0)  << ", " << ave_dirt_count_a1/(iter*1.0) << endl;
+	cout << n << ", " << m << ", " << p << ", 2, " << action_count2/(iter*1.0)  << ", " << clean_count2/(iter*1.0)  << ", " << ave_dirt_count_a2/(iter*1.0) << endl;
+	cout << n << ", " << m << ", " << p << ", 3, " << action_count3/(iter*1.0)  << ", " << clean_count3/(iter*1.0)  << ", " << ave_dirt_count_a3/(iter*1.0) << endl;
 	return 0;
 }
