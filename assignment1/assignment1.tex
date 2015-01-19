@@ -81,7 +81,6 @@ else forward 0.5 turn-right 0.25 turn-left 0.25
 
 
 \subsection{Memory-Based Deterministic Reflex Agent}
-How does the memory-based deterministic agent perform compared to the random agent? Was it able to completely clean the room? Was it able to shut itself off after it is done? If it did, how many actions did it take to do this? Can the agent be improved any further with more memory than you used? Why or why not?
 \subsubsection{Design}
 \begin{figure}[H]
 	\begin{center}
@@ -93,14 +92,20 @@ How does the memory-based deterministic agent perform compared to the random age
 The memory-based deterministic reflex agent is similar to memory-less deterministic reflex agent, but it has more information about the world and its location with its 3-bit memory. 
 This 3-bit memory allows the agent to know which direction its facing and if it took a turn recently.
 In state 0, the agent knows that it is heading up.
-In state 1, the agent knows that it just hit the north wall, and it is now facing right.
-In state 2, the agent knows that it just turned after hitting the north wall, and it is facing right.
-In state 3, the agent knows that it is now facing down. 
-In state 4, the agent knows that it just hit the south wall, and it is now facing right.
-In state 5, the agent knows that it just turned after hitting the south wall, and it is facing right.
-In state 6, the agent knows that it just hit the east wall, now facing down, and on its way home.
-In state 7, the agent knows that it just hit the south wall, now facing left, and on its way home.
+In state 1, it just hit the north wall, and it is now facing right.
+In state 2, it just turned after hitting the north wall, and it is facing right.
+In state 3, it is now facing down. 
+In state 4, it just hit the south wall, and it is now facing right.
+In state 5, it just turned after hitting the south wall, and it is facing right.
+In state 6, it just hit the east wall, now facing down, and on its way home.
+In state 7, it just hit the south wall, now facing left, and on its way home.
 
+Like the memory-less deterministic reflex agent, the performance could be calculated.
+The agent will take 100 actions to move onto all the cells, 9 actions to visited cells on the way home, 20 turn actions, and 1 action to turn off. 
+This agent will always take 130 movement actions and a number of suck actions for the number of cells that were dirty in the room. 
+Therefore we can conclude the performance is:
+
+\[\frac{\mbox{number of dirty cells}}{\mbox{130 movement actions} + \mbox{number of dirty cells}}\] 
 
 \subsubsection{If-then Rules}
 \begin{verbatim}
@@ -117,6 +122,18 @@ else if state6 and wall then turn-right set-state7
 else if state7 and home then off
 else forward
 \end{verbatim}
+
+\subsubsection{Discussion}
+How does the memory-based deterministic agent perform compared to the random agent? Was it able to completely clean the room? Was it able to shut itself off after it is done? If it did, how many actions did it take to do this? Can the agent be improved any further with more memory than you used? Why or why not?
+
+The memory-based deterministic agent took around the same number of actions compared to the random agent, but memory-based deterministic agent always left the room 100\% cleaned. 
+At the end of the random agent's run, 24\% to 100\% of the room was clean. 
+The efficiency was much higher than the random agent, the random agent took moves that went over visited cell and therefore wasted actions. 
+The memory-based deterministic agent also wasted actions finding its way home, but not as much as the random one. 
+The memory-based deterministic agent will completely clean the room, but it will take him 130 actions to clean a completely clean room. 
+With even more memory, the agent could map out the size of the room.
+With the room size, it could create a better route without running over visited cells. 
+Also with the room size stored, it can save that knowledge for the next time it cleans the room, allowing for a better mapped route.
 
 
 \section{Results}
