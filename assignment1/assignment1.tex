@@ -18,16 +18,32 @@ The agents also have 3 sensor to interact with the room; a wall sensor, a dirt s
 The memory-less Deterministic Reflex Agent
 
 \section{Introduction}
-AI background
-Generic vacuum problem
-Environment, partially observable, deterministic, single agent, sequential, discrete, known.
-Agents-overview. Memory restrictions
 
+In this paper we present our results for the generic vacuum cleaner world problem.
+This problem has been used as a standard conceptual problem of AI for many years.
+The vacuum cleaner world is a discretized environment that is n X m in dimension.
+Each cell in this world has some percent (p) of contining dirt.
+The goal of the vacuum cleaner is to find the cells containing dirt and clean them.
+For this implementation of the vacuum problem we use one agent per experiment.
+This agent doesn't know the state of the entire world, but can only observe based on three sensors; a front facing wall sensor, a dirt sensor, and a home sensor.
+This means that the environment is partially observable.
+In addition the sensors are modeled without uncertainty, making it a deterministic problem.
+Lastly, the first two experiments are episodic because the agent experiences a precept and then performs a single action and that action does not depend on previous actions.
+In the case of the third experiment the agent does make decisions based on previous actions, and the experiment is therefor sequential.
 
-
+%Environment, partially observable, deterministic, single agent, sequential, discrete, known.
+%Agents-overview. Memory restrictions
 
 \section{Problem Formulation}
 Environment specifics
+We run three experiments and compare the results.
+Each experiment is in an environment of 10x10, or 100 cells.
+The probability of dirt in each cell is varied from 0 to 100.
+The five actions that can be taken are move forward, rotate 90 degrees left, rotate 90 degrees right, clean the current cell, and turn off.
+The agent starts in the bottom left corner of the environment each time, this is defined as the agents home.
+The experiment ends when the agent returns to the home position.
+Each experiment is of a different agent in the same environment.
+The three different agents are defined in the following sections.
 
 \section{Agents}
 Describe the idea behind the design of each of your agents. Use diagrams and english as appropriate.
@@ -52,13 +68,13 @@ else forward
 \subsubsection{Discussion}
 What is the best possible performance achievable by any memory-less reflex agent in this domain? What prevents a memory-less reflex agent from doing very well in this task?
 
-Since the agent follows the wall around the room, it will always run over 36 cells. 
-So this means that it can only clean a maximum of 36 cells. 
-It takes 37 forward actions to travel the room, not including 3 turn actions, then takes one action to turn off. 
-This agent will always take 41 movement actions and a number of suck actions for the number of cells that were dirty on the side of the room. 
-Therefore we can conclude the performance efficiency is:
+Since the agent follows the wall around the room, it will always run over 36 cells.
+So this means that it can only clean a maximum of 36 cells.
+It takes 37 forward actions to travel the room, not including 3 turn actions, then takes one action to turn off.
+This agent will always take 41 movement actions and a number of suck actions for the number of cells that were dirty on the side of the room.
+Therefore we can conclude the performance is:
 
-\[\frac{\mbox{number of cleaned cells}}{\mbox{41 movement actions} + \mbox{number of cleaned cells}}\] 
+\[\frac{\mbox{number of cleaned cells}}{\mbox{41 movement actions} + \mbox{number of cleaned cells}}\]
 
 
 
@@ -126,13 +142,13 @@ else forward
 \subsubsection{Discussion}
 How does the memory-based deterministic agent perform compared to the random agent? Was it able to completely clean the room? Was it able to shut itself off after it is done? If it did, how many actions did it take to do this? Can the agent be improved any further with more memory than you used? Why or why not?
 
-The memory-based deterministic agent took around the same number of actions compared to the random agent, but memory-based deterministic agent always left the room 100\% cleaned. 
-At the end of the random agent's run, 24\% to 100\% of the room was clean. 
-The efficiency was much higher than the random agent, the random agent took moves that went over visited cell and therefore wasted actions. 
-The memory-based deterministic agent also wasted actions finding its way home, but not as much as the random one. 
-The memory-based deterministic agent will completely clean the room, but it will take him 130 actions to clean a completely clean room. 
+The memory-based deterministic agent took around the same number of actions compared to the random agent, but memory-based deterministic agent always left the room 100\% cleaned.
+At the end of the random agent's run, 24\% to 100\% of the room was clean.
+The efficiency was much higher than the random agent, the random agent took moves that went over visited cell and therefore wasted actions.
+The memory-based deterministic agent also wasted actions finding its way home, but not as much as the random one.
+The memory-based deterministic agent will completely clean the room, but it will take him 130 actions to clean a completely clean room.
 With even more memory, the agent could map out the size of the room.
-With the room size, it could create a better route without running over visited cells. 
+With the room size, it could create a better route without running over visited cells.
 Also with the room size stored, it can save that knowledge for the next time it cleans the room, allowing for a better mapped route.
 
 
@@ -165,5 +181,14 @@ Plot 3- \# clean cells vs \# actions taken
 \end{figure}
 
 \section{Conclusion}
-What did you learn from this experiment? Were you surprised by anything?
+The experimental results are an interesting comparison of three agents with varying degrees of complexity.
+We were surprised that the efficiency of the memory-less agent was higher than that of the more complex agents.
+While the agent with memory was gauranteed to clean the entire environment, it was actually less efficient than the memoryless agent.
+Similarly suprising was that the memory-less agent had a higher percentage cleaned than the random agent.
+Our results show the benefits of each agent, and we learned that in not all metrics is a more complex agent better.
+While this is a simple toy problem, what we learned may be extrapolated out to more complex real world situations.
+Not always will the more complicated algorithm perform better.
+
+
+%What did you learn from this experiment? Were you surprised by anything?
 \end{document}
