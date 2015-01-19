@@ -56,7 +56,7 @@ Since the agent follows the wall around the room, it will always run over 36 cel
 So this means that it can only clean a maximum of 36 cells. 
 It takes 37 forward actions to travel the room, not including 3 turn actions, then takes one action to turn off. 
 This agent will always take 41 movement actions and a number of suck actions for the number of cells that were dirty on the side of the room. 
-Therefore we can conclude the performance is:
+Therefore we can conclude the performance efficiency is:
 
 \[\frac{\mbox{number of cleaned cells}}{\mbox{41 movement actions} + \mbox{number of cleaned cells}}\] 
 
@@ -103,7 +103,7 @@ In state 7, it just hit the south wall, now facing left, and on its way home.
 Like the memory-less deterministic reflex agent, the performance could be calculated.
 The agent will take 100 actions to move onto all the cells, 9 actions to visited cells on the way home, 20 turn actions, and 1 action to turn off. 
 This agent will always take 130 movement actions and a number of suck actions for the number of cells that were dirty in the room. 
-Therefore we can conclude the performance is:
+Therefore we can conclude the performance efficiency is:
 
 \[\frac{\mbox{number of dirty cells}}{\mbox{130 movement actions} + \mbox{number of dirty cells}}\] 
 
@@ -157,7 +157,7 @@ Plot 2- dirt per action vs \% starting dirt
 	\includegraphics[width=0.9\textwidth]{image1.png}
 \end{figure}
 
-
+This graph shows the efficiency of each agent.
 
 Plot 3- \# clean cells vs \# actions taken
 \begin{figure}[H]
