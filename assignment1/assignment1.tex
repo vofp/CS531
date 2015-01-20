@@ -10,12 +10,13 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Our goal was to study to performance of different types of agents; Memory-less Deterministic Reflex Agent, Random Reflex Agent and Memory-Based Deterministic Reflex Agent.
+Our goal was to study to performance of different types of agents; memory-less deterministic reflex agent, random reflex agent, and memory-based deterministic reflex agent.
 We will measure the performance based on number of cleaned cells vs the number of actions taken.
 The environment is a n X m empty rectangular room with p\% chance of containing dirt.
 The agents have 5 actions; go forward, turn right by 90 degrees, turn left by 90 degrees, suck up dirt, and turn off.
 The agents also have 3 sensor to interact with the room; a wall sensor, a dirt sensor, and a home sensor.
-The memory-less Deterministic Reflex Agent
+The memory-less agent, showed slightly higher efficiency than the memory-based agent.
+The memory-based agent showed better performance and was gauranteed to clean the room, while the memory-less and random agents never cleaned more than 50 percent of the dirty tiles.
 \end{abstract}
 
 \section{Introduction}
@@ -36,9 +37,8 @@ In the case of the third experiment the agent does make decisions based on previ
 %Agents-overview. Memory restrictions
 
 \section{Problem Formulation}
-Environment specifics
 We run three experiments and compare the results.
-Each experiment is in an environment of 10x10, or 100 cells.
+Each experiment is in an environment of 10 x 10, or 100 cells.
 The probability of dirt in each cell is varied from 0 to 100.
 The five actions that can be taken are move forward, rotate 90 degrees left, rotate 90 degrees right, clean the current cell, and turn off.
 The agent starts in the bottom left corner of the environment each time, this is defined as the agents home.
@@ -47,7 +47,9 @@ Each experiment is of a different agent in the same environment.
 The three different agents are defined in the following sections.
 
 \section{Agents}
-Describe the idea behind the design of each of your agents. Use diagrams and English as appropriate.
+Three different agents are used, a memory-less deterministic reflex agent, a random reflex agent, and a memory-based deterministic reflex agent.
+In the following sections, for each agent the design and rules are explained followed by a discussion of the agents performance.
+%Describe the idea behind the design of each of your agents. Use diagrams and English as appropriate.
 \subsection{Memory-less Deterministic Reflex Agent}
 \subsubsection{Design}
 \begin{figure}[H]
@@ -67,7 +69,7 @@ else forward
 \end{verbatim}
 
 \subsubsection{Discussion}
-What is the best possible performance achievable by any memory-less reflex agent in this domain? What prevents a memory-less reflex agent from doing very well in this task?
+%What is the best possible performance achievable by any memory-less reflex agent in this domain? What prevents a memory-less reflex agent from doing very well in this task?
 
 Since the agent follows the wall around the room, it will always run over 36 cells.
 So this means that it can only clean a maximum of 36 cells.
@@ -81,7 +83,7 @@ Therefore we can conclude the performance is:
 
 
 \subsection{Random Reflex Agent}
-How well does the random agent perform? Do you think that this is the best possible performance achievable by any random agent? Why or why not? Give a table showing the number of actions it took to clean 90\% of the room for each trial. What is the average of these numbers for the best 45 trials? What are the costs and benefits of randomness in agent design?
+%How well does the random agent perform? Do you think that this is the best possible performance achievable by any random agent? Why or why not? Give a table showing the number of actions it took to clean 90\% of the room for each trial. What is the average of these numbers for the best 45 trials? What are the costs and benefits of randomness in agent design?
 \subsubsection{Design}
 \begin{figure}[H]
 	\begin{center}
@@ -141,7 +143,7 @@ else forward
 \end{verbatim}
 
 \subsubsection{Discussion}
-How does the memory-based deterministic agent perform compared to the random agent? Was it able to completely clean the room? Was it able to shut itself off after it is done? If it did, how many actions did it take to do this? Can the agent be improved any further with more memory than you used? Why or why not?
+%How does the memory-based deterministic agent perform compared to the random agent? Was it able to completely clean the room? Was it able to shut itself off after it is done? If it did, how many actions did it take to do this? Can the agent be improved any further with more memory than you used? Why or why not?
 
 The memory-based deterministic agent took around the same number of actions compared to the random agent, but memory-based deterministic agent always left the room 100\% cleaned.
 At the end of the random agent's run, 24\% to 100\% of the room was clean.
@@ -186,10 +188,17 @@ The experimental results are an interesting comparison of three agents with vary
 We were surprised that the efficiency of the memory-less agent was higher than that of the more complex agents.
 While the agent with memory was guaranteed to clean the entire environment, it was actually less efficient than the memoryless agent.
 Similarly surprising was that the memory-less agent had a higher percentage cleaned than the random agent.
+If it is more important that the whole area is cleaned then the Memory-based agent is gauranteed to perform the best.
+If efficiency is more important (maybe due to battery restrictions on a robot) then the memory-based and memory-less are comparable, with the memory-less performing slightly better.
+If the agent can only perform a small number of actions, the memory-less agent is the only option.
+If the number of actions is not a limitation then the memory-based agent performs significantly better than the random agent in all metrics.
 Our results show the benefits of each agent, and we learned that in not all metrics is a more complex agent better.
 While this is a simple toy problem, what we learned may be extrapolated out to more complex real world situations.
 Not always will the more complicated algorithm perform better.
 
+Future work may include investigating agents with larger memory capabilities.
+Additionally, it would be interesting to learn if adding more sensing capabilities to the agents would deliver different results.
+Further simulations varying the size of the environment should also be explored.
 
 %What did you learn from this experiment? Were you surprised by anything?
 \end{document}
