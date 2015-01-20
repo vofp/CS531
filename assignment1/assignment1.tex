@@ -79,7 +79,7 @@ Therefore we can conclude the performance is:
 
 \[\frac{\mbox{number of cleaned cells}}{\mbox{41 movement actions} + \mbox{number of cleaned cells}}\]
 
-
+The agent doesn't know much about the environment, and that prevents the agent from making good choices. 
 
 
 \subsection{Random Reflex Agent}
@@ -97,6 +97,9 @@ if dirt then suck
 else if wall then turn-right 0.5 turn-left 0.5
 else forward 0.5 turn-right 0.25 turn-left 0.25
 \end{verbatim}
+
+\subsubsection{Discussion}
+The random agent performed better than we expected. It cleaned around 25\% of the dirt in the room. The agent wasn't very efficiency; only achieving 0.12 clean tiles per action, or it takes 8.3 actions to clean one tile. I think the performance could be improved by changing the weights on the actions taken: changing the agent to take more right turns might change the performance.
 
 
 \subsection{Memory-Based Deterministic Reflex Agent}
@@ -156,9 +159,7 @@ Also with the room size stored, it can save that knowledge for the next time it 
 
 
 \section{Results}
-Plots, discuss plots.
-
-Plot 1- \%final dirt vs \% starting dirt \\
+\subsection{Plot 1: Percent Cleaned}
 \begin{figure}[H]
 	\begin{center}
 		\includegraphics[width=0.9\textwidth]{image.png}
@@ -171,14 +172,18 @@ The memory-based reflex agent always cleans 100\% of the dirt and therefore is v
 The memoryless agent only cleans up to 36\% of the dirt because it only cleans the outer perimeter of the room.
 The random agent cleaned a random 24\% of the dirt in the room. 
 
-Plot 2- dirt per action vs \% starting dirt
+\subsection{Plot 2: Efficiency}
 \begin{figure}[H]
 	\includegraphics[width=0.9\textwidth]{image1.png}
 \end{figure}
 
 This graph shows the efficiency of each agent.
+The efficiency increased with the number of dirty cells at the beginning.
+The memoryless agent performs the best with 0.47 cleaned cells per action.
+the random agent did the worst with 0.13 cleaned cells per action because it wasted moves by moving over locations its been before.
+The memory-base agent has efficiency close to the memoryless with 0.43 cleaned cells per action.
 
-Plot 3- \# clean cells vs \# actions taken
+\subsection{Plot 3: Performance}
 \begin{figure}[H]
 	\includegraphics[width=0.9\textwidth]{image2.png}
 \end{figure}
