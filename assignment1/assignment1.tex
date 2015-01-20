@@ -9,27 +9,28 @@
 
 \begin{document}
 \maketitle
-% \{abstract}
-Our goal was to study to preformance of different types of agents; Memory-less Deterministic Reflex Agent, Random Reflex Agent and Memory-Based Deteministic Reflex Agent.
+\begin{abstract}
+Our goal was to study to performance of different types of agents; Memory-less Deterministic Reflex Agent, Random Reflex Agent and Memory-Based Deterministic Reflex Agent.
 We will measure the performance based on number of cleaned cells vs the number of actions taken.
 The environment is a n X m empty rectangular room with p\% chance of containing dirt.
 The agents have 5 actions; go forward, turn right by 90 degrees, turn left by 90 degrees, suck up dirt, and turn off.
 The agents also have 3 sensor to interact with the room; a wall sensor, a dirt sensor, and a home sensor.
 The memory-less Deterministic Reflex Agent
+\end{abstract}
 
 \section{Introduction}
 
 In this paper we present our results for the generic vacuum cleaner world problem.
 This problem has been used as a standard conceptual problem of AI for many years.
 The vacuum cleaner world is a discretized environment that is n X m in dimension.
-Each cell in this world has some percent (p) of contining dirt.
+Each cell in this world has some percent (p) of containing dirt.
 The goal of the vacuum cleaner is to find the cells containing dirt and clean them.
 For this implementation of the vacuum problem we use one agent per experiment.
 This agent doesn't know the state of the entire world, but can only observe based on three sensors; a front facing wall sensor, a dirt sensor, and a home sensor.
 This means that the environment is partially observable.
 In addition the sensors are modeled without uncertainty, making it a deterministic problem.
 Lastly, the first two experiments are episodic because the agent experiences a precept and then performs a single action and that action does not depend on previous actions.
-In the case of the third experiment the agent does make decisions based on previous actions, and the experiment is therefor sequential.
+In the case of the third experiment the agent does make decisions based on previous actions, and the experiment is therefore sequential.
 
 %Environment, partially observable, deterministic, single agent, sequential, discrete, known.
 %Agents-overview. Memory restrictions
@@ -46,7 +47,7 @@ Each experiment is of a different agent in the same environment.
 The three different agents are defined in the following sections.
 
 \section{Agents}
-Describe the idea behind the design of each of your agents. Use diagrams and english as appropriate.
+Describe the idea behind the design of each of your agents. Use diagrams and English as appropriate.
 \subsection{Memory-less Deterministic Reflex Agent}
 \subsubsection{Design}
 \begin{figure}[H]
@@ -183,8 +184,8 @@ Plot 3- \# clean cells vs \# actions taken
 \section{Conclusion}
 The experimental results are an interesting comparison of three agents with varying degrees of complexity.
 We were surprised that the efficiency of the memory-less agent was higher than that of the more complex agents.
-While the agent with memory was gauranteed to clean the entire environment, it was actually less efficient than the memoryless agent.
-Similarly suprising was that the memory-less agent had a higher percentage cleaned than the random agent.
+While the agent with memory was guaranteed to clean the entire environment, it was actually less efficient than the memoryless agent.
+Similarly surprising was that the memory-less agent had a higher percentage cleaned than the random agent.
 Our results show the benefits of each agent, and we learned that in not all metrics is a more complex agent better.
 While this is a simple toy problem, what we learned may be extrapolated out to more complex real world situations.
 Not always will the more complicated algorithm perform better.
