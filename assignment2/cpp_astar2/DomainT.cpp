@@ -12,14 +12,11 @@ void DomainT::get_towers(String s){
 	for(int i = length(s); s >= 0; s--){
 		NodeT->a.push_back(atoi(s[i]));
 	}
-	
-}
-
-void DomainT::get_nodes(){
+	nodesT.push_back(new_node)
 }
 
 NodeT* DomainT::get_start(){
-	return &nodesT[0];
+	return nodesT[0];
 }
 
 NodeT* DomainT::get_goal(){

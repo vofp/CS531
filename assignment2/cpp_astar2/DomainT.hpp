@@ -9,9 +9,8 @@ class Domain2d{
 	public:
 		//void get_map();
 		int get_tower_size();
-		vector< NodeT > nodesT;
-		void get_nodes();
-		vector<NodeT*> get_neighbors(NodeT*);
+		vector< NodeT* > nodesT;
+		vector< NodeT* > get_neighbors(NodeT*);
 		double get_heuristic(NodeT*);
 		double get_cost();
 		NodeT* get_start();
