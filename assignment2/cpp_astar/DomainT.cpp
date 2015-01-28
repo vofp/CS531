@@ -10,7 +10,7 @@ int DomainT::get_towers_size(){
 void DomainT::get_towers(string s){
 	NodeT *new_node = new NodeT(&this->nodesT);
 	for(int i = s.size(); i >= 0; i--){
-		new_node->a.push_back(atoi(s[i]));
+		new_node->a.push_back(atoi(s[i] + ""));
 	}
 	// nodesT.push_back(new_node);
 }
@@ -21,7 +21,7 @@ NodeT* DomainT::get_start(){
 
 NodeT* DomainT::get_goal(){
 	NodeT *goal = new NodeT(&this->nodesT);
-	return &nodes[1];
+	return goal;
 }
 
 
@@ -30,9 +30,9 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 	if(!current->a.empty()){
 		NodeT* new_node1 = new NodeT(&this->nodesT);
 		NodeT* new_node2 = new NodeT(&this->nodesT);
-		current.copy(new_node1);
-		current.copy(new_node1);
-		int ring = new_node1->a.end();
+		current->copy(new_node1);
+		current->copy(new_node1);
+		int ring = new_node1->a.back();
 		new_node1->b.push_back(ring);
 		new_node2->c.push_back(ring);
 		neighbors.push_back(new_node1);
@@ -41,9 +41,9 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 	if(!current->b.empty()){
 		NodeT* new_node1 = new NodeT(&this->nodesT);
 		NodeT* new_node2 = new NodeT(&this->nodesT);
-		current.copy(new_node1);
-		current.copy(new_node1);
-		int ring = new_node1->b.end();
+		current->copy(new_node1);
+		current->copy(new_node1);
+		int ring = new_node1->b.back();
 		new_node1->a.push_back(ring);
 		new_node2->c.push_back(ring);
 		neighbors.push_back(new_node1);
@@ -52,9 +52,9 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 	if(!current->c.empty()){
 		NodeT* new_node1 = new NodeT(&this->nodesT);
 		NodeT* new_node2 = new NodeT(&this->nodesT);
-		current.copy(new_node1);
-		current.copy(new_node1);
-		int ring = new_node1->c.end();
+		current->copy(new_node1);
+		current->copy(new_node1);
+		int ring = new_node1->c.back();
 		new_node1->a.push_back(ring);
 		new_node2->b.push_back(ring);
 		neighbors.push_back(new_node1);
@@ -94,10 +94,10 @@ double DomainT::get_heuristic(NodeT* current){
 			}
 		}
 	}
-	return heuristic;
+	return h;
 }
 
-double DomainT::get_cost(NodeT* curr, NodeT* neigh){
+double DomainT::get_cost(){
 	return 1;
 }
 
