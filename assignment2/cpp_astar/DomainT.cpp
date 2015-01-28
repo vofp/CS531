@@ -10,7 +10,7 @@ int DomainT::get_towers_size(){
 void DomainT::get_towers(string s){
 	NodeT *new_node = new NodeT(&this->nodesT);
 	for(int i = s.size(); i >= 0; i--){
-		NodeT->a.push_back(atoi(s[i]));
+		new_node->a.push_back(atoi(s[i]+""));
 	}
 	// nodesT.push_back(new_node);
 }
@@ -66,8 +66,8 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 
 double DomainT::get_heuristic(NodeT* current){
 	double h = 0.0;
-	for(int i = 0; i < current->a.size(); ++i) {
-		for (int j = i+1; j < current->a.size(); ++j)
+	for(unsigned int i = 0; i < current->a.size(); ++i) {
+		for (unsigned int j = i+1; j < current->a.size(); ++j)
 		{
 			if(current->a[i] < current->a[j]) {
 				h += 1;
@@ -75,8 +75,8 @@ double DomainT::get_heuristic(NodeT* current){
 			h += current->a[i];
 		}
 	}
-	for(int i = 0; i < current->b.size(); ++i) {
-		for (int j = i+1; j < current->b.size(); ++j)
+	for(unsigned int i = 0; i < current->b.size(); ++i) {
+		for (unsigned int j = i+1; j < current->b.size(); ++j)
 		{
 			if(current->b[i] < current->b[j]) {
 				h += 1;
@@ -84,10 +84,10 @@ double DomainT::get_heuristic(NodeT* current){
 			h += current->b[i];
 		}
 	}
-	for(int i = 0; i < current->c.size(); ++i) {
-		for (int j = i+1; j < current->c.size(); ++j)
+	for(unsigned int i = 0; i < current->c.size(); ++i) {
+		for (unsigned int j = i+1; j < current->c.size(); ++j)
 		{
-			if(current->c[i] != i+1) {
+			if(current->c[i] != (signed)i+1) {
 				if(current->c[i] < current->c[j]) {
 					h += 1;
 				}
