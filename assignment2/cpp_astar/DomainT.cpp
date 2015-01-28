@@ -21,7 +21,6 @@ NodeT* DomainT::get_start(){
 
 NodeT* DomainT::get_goal(){
 	NodeT *goal = new NodeT(&this->nodesT);
-	
 	return goal;
 }
 
