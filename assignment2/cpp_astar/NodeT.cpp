@@ -13,7 +13,7 @@ void NodeT::copy(NodeT* n){
 }
 
 
-NodeT::NodeT(vector< NodeT* > nodesT){
+NodeT::NodeT(vector< NodeT* > *nodesT){
 	g_score = 0;
 	f_score = 0;
 	nodesT->push_back(this);
