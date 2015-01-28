@@ -8,7 +8,7 @@ int DomainT::get_towers_size(){
 }
 
 void DomainT::get_towers(string s){
-	NodeT *new_node = new NodeT(this->nodesT);
+	NodeT *new_node = new NodeT(&this->nodesT);
 	for(int i = s.size(); i >= 0; i--){
 		NodeT->a.push_back(atoi(s[i]));
 	}
