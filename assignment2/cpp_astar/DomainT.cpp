@@ -10,7 +10,7 @@ int DomainT::get_towers_size(){
 void DomainT::get_towers(string s){
 	NodeT *new_node = new NodeT(&this->nodesT);
 	for(int i = s.size(); i >= 0; i--){
-		NodeT->a.push_back(atoi(s[i]));
+		new_node->a.push_back(atoi(s[i]));
 	}
 	// nodesT.push_back(new_node);
 }
@@ -21,7 +21,6 @@ NodeT* DomainT::get_start(){
 
 NodeT* DomainT::get_goal(){
 	NodeT *goal = new NodeT(&this->nodesT);
-	
 	return &nodes[1];
 }
 
