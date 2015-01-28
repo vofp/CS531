@@ -3,16 +3,16 @@
 #include <iostream>
 using namespace std;
 
-void DomainT::get_towers_size(){
-	return size;
+int DomainT::get_towers_size(){
+	return 0;
 }
 
-void DomainT::get_towers(String s){
-	NodeT *new_node = new NodeT;
-	for(int i = length(s); s >= 0; s--){
+void DomainT::get_towers(string s){
+	NodeT *new_node = new NodeT(this->nodesT);
+	for(int i = s.size(); i >= 0; i--){
 		NodeT->a.push_back(atoi(s[i]));
 	}
-	nodesT.push_back(new_node)
+	// nodesT.push_back(new_node);
 }
 
 NodeT* DomainT::get_start(){
@@ -20,18 +20,19 @@ NodeT* DomainT::get_start(){
 }
 
 NodeT* DomainT::get_goal(){
-	NodeT *goal = new NodeT;
+	NodeT *goal = new NodeT(&this->nodesT);
 	
-	return &nodes[];
+	return &nodes[1];
 }
 
 
 vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 	vector<NodeT*> neighbors;
 	if(!current->a.empty()){
-		NodeT* new_node1 = new NodeT;
-		NodeT* new_node2 = new NodeT;
-		new_node1 = copy(current);
+		NodeT* new_node1 = new NodeT(&this->nodesT);
+		NodeT* new_node2 = new NodeT(&this->nodesT);
+		current.copy(new_node1);
+		current.copy(new_node1);
 		int ring = new_node1->a.end();
 		new_node1->b.push_back(ring);
 		new_node2->c.push_back(ring);
@@ -39,9 +40,10 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 		neighbors.push_back(new_node2);
 	}
 	if(!current->b.empty()){
-		NodeT* new_node1 = new NodeT;
-		NodeT* new_node2 = new NodeT;
-		new_node1 = copy(current);
+		NodeT* new_node1 = new NodeT(&this->nodesT);
+		NodeT* new_node2 = new NodeT(&this->nodesT);
+		current.copy(new_node1);
+		current.copy(new_node1);
 		int ring = new_node1->b.end();
 		new_node1->a.push_back(ring);
 		new_node2->c.push_back(ring);
@@ -49,9 +51,10 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 		neighbors.push_back(new_node2);
 	}
 	if(!current->c.empty()){
-		NodeT* new_node1 = new NodeT;
-		NodeT* new_node2 = new NodeT;
-		new_node1 = copy(current);
+		NodeT* new_node1 = new NodeT(&this->nodesT);
+		NodeT* new_node2 = new NodeT(&this->nodesT);
+		current.copy(new_node1);
+		current.copy(new_node1);
 		int ring = new_node1->c.end();
 		new_node1->a.push_back(ring);
 		new_node2->b.push_back(ring);
@@ -62,7 +65,36 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 }
 
 double DomainT::get_heuristic(NodeT* current){
-
+	double h = 0.0;
+	for(int i = 0; i < current->a.size(); ++i) {
+		for (int j = i+1; j < current->a.size(); ++j)
+		{
+			if(current->a[i] < current->a[j]) {
+				h += 1;
+			}
+			h += current->a[i];
+		}
+	}
+	for(int i = 0; i < current->b.size(); ++i) {
+		for (int j = i+1; j < current->b.size(); ++j)
+		{
+			if(current->b[i] < current->b[j]) {
+				h += 1;
+			}
+			h += current->b[i];
+		}
+	}
+	for(int i = 0; i < current->c.size(); ++i) {
+		for (int j = i+1; j < current->c.size(); ++j)
+		{
+			if(current->c[i] != i+1) {
+				if(current->c[i] < current->c[j]) {
+					h += 1;
+				}
+				h += current->c[i];
+			}
+		}
+	}
 	return heuristic;
 }
 

@@ -1,7 +1,7 @@
-CC=g++-4.9
+CC=g++
 CFLAGS=-std=c++11 -g -Wall -O2
 LDFLAGS=
-SOURCES=main.cpp DomainT.cpp astar.cpp NodeT.cpp
+SOURCES=main.cpp DomainT.cpp NodeT.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=main
 

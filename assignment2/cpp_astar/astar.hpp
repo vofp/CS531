@@ -1,6 +1,6 @@
 #ifndef ASTAR_HPP
 #define ASTAR_HPP
-#include "Domain2d.hpp"
+#include "DomainT.hpp"
 
 struct comp_func{
 	bool operator()( const Node2d* a, const Node2d* b){
