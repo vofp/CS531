@@ -3,7 +3,7 @@
 #include "DomainT.hpp"
 
 struct comp_func{
-	bool operator()( const Node2d* a, const Node2d* b){
+	bool operator()( const NodeT* a, const NodeT* b){
 		return(a->f_score< b->f_score);
 	}
 };
@@ -11,9 +11,8 @@ struct comp_func{
 
 class astar{
 	public:
-		//vector< Node2d* > path;
-		vector< Node2d*>  get_path(Domain2d);
-		
+		//vector< NodeT* > path;
+		vector< NodeT*>  get_path(DomainT);
 
 		//astar(void);
 		//~astar(void);
