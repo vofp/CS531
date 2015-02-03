@@ -3,7 +3,7 @@ CFLAGS=-std=c++11 -g -Wall -O2
 LDFLAGS=
 SOURCES=main.cpp DomainT.cpp NodeT.cpp astar.cpp rbfs.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=main
+EXECUTABLE=main.out
 
 all: $(SOURCES) $(EXECUTABLE)
 
