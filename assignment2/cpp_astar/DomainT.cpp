@@ -8,11 +8,22 @@ int DomainT::get_towers_size(){
 }
 
 void DomainT::get_towers(string s){
-	NodeT *new_node = new NodeT(&this->nodesT);
-	for(int i = s.size(); i >= 0; i--){
-		new_node->a.push_back(atoi(s[i]+""));
+	NodeT *new_node = new NodeT();
+	for(int i = s.size()-1; i >= 0; --i){
+		int n = s[i]-'0';
+		cout << n << endl;
+		new_node->a.push_back(n);
 	}
-	// nodesT.push_back(new_node);
+	new_node->set_id();
+	nodesT.push_back(new_node);
+
+	NodeT *new_node2 = new NodeT();
+	for(unsigned int i = 0; i < s.size(); i++){
+		new_node2->c.push_back(i);
+	}
+	cout << new_node2->set_id() << endl;
+	// nodesT.push_back(new_node2);
+	goal = new_node2;
 }
 
 NodeT* DomainT::get_start(){
@@ -20,45 +31,101 @@ NodeT* DomainT::get_start(){
 }
 
 NodeT* DomainT::get_goal(){
-	NodeT *goal = new NodeT(&this->nodesT);
 	return goal;
+}
+
+NodeT* DomainT::find_or_create(string s){
+	NodeT* n = find(s);
+	if (n==NULL){
+		return create(s);
+	}
+	return n;
+}
+
+NodeT* DomainT::find(string s){
+	for (vector<NodeT*>::iterator n = nodesT.begin(); n != nodesT.end(); ++n){
+		if ((*n)->id.compare(s) == 0 ){
+			return *n;
+		}
+	}
+	return NULL;
+}
+
+NodeT* DomainT::create(string s){
+	NodeT *new_node = new NodeT();
+	unsigned int i = 0;
+	while(i < s.size() && s[i] != '.'){
+		new_node->a.push_back(atoi(s[i]+""));
+		i += 1;
+	}
+	i += 1;
+	while(i < s.size() && s[i] != '.'){
+		new_node->b.push_back(atoi(s[i]+""));
+		i += 1;
+	}
+	i += 1;
+	while(i < s.size() && s[i] != '.'){
+		new_node->c.push_back(atoi(s[i]+""));
+		i += 1;
+	}
+	new_node->set_id();
+	nodesT.push_back(new_node);
+	return new_node;
 }
 
 
 vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 	vector<NodeT*> neighbors;
 	if(!current->a.empty()){
-		NodeT* new_node1 = new NodeT(&this->nodesT);
-		NodeT* new_node2 = new NodeT(&this->nodesT);
-		current->copy(new_node1);
-		current->copy(new_node1);
-		int ring = new_node1->a.back();
-		new_node1->b.push_back(ring);
-		new_node2->c.push_back(ring);
-		neighbors.push_back(new_node1);
-		neighbors.push_back(new_node2);
+
+		string s (current->id);
+		std::size_t found = s.find('.');
+		if (found!=std::string::npos){
+			char c = s[found-1];
+			s.erase(found-1);
+			string s2 (s);
+			found = s.find(',');
+			if (found!=std::string::npos){
+				s.insert(found,c+"");
+				s2.insert(s2.end(),c);
+
+				neighbors.push_back(find_or_create(s));
+				neighbors.push_back(find_or_create(s2));
+			}
+		}
 	}
 	if(!current->b.empty()){
-		NodeT* new_node1 = new NodeT(&this->nodesT);
-		NodeT* new_node2 = new NodeT(&this->nodesT);
-		current->copy(new_node1);
-		current->copy(new_node1);
-		int ring = new_node1->b.back();
-		new_node1->a.push_back(ring);
-		new_node2->c.push_back(ring);
-		neighbors.push_back(new_node1);
-		neighbors.push_back(new_node2);
+		string s (current->id);
+		std::size_t found = s.find(',');
+		if (found!=std::string::npos){
+			char c = s[found-1];
+			s.erase(found-1);
+			string s2 (s);
+			found = s.find('.');
+			if (found!=std::string::npos){
+				s.insert(found,c+"");
+				s2.insert(s2.end(),c);
+
+				neighbors.push_back(find_or_create(s));
+				neighbors.push_back(find_or_create(s2));
+			}
+		}
 	}
 	if(!current->c.empty()){
-		NodeT* new_node1 = new NodeT(&this->nodesT);
-		NodeT* new_node2 = new NodeT(&this->nodesT);
-		current->copy(new_node1);
-		current->copy(new_node1);
-		int ring = new_node1->c.back();
-		new_node1->a.push_back(ring);
-		new_node2->b.push_back(ring);
-		neighbors.push_back(new_node1);
-		neighbors.push_back(new_node2);
+		string s (current->id);
+		char c = s.back();
+		s.erase(s.end());
+		std::size_t found = s.find('.');
+		if (found!=std::string::npos){
+			string s2 (s);
+			s.insert(found,c+"");
+			neighbors.push_back(find_or_create(s));
+			found = s2.find(',');
+			if (found!=std::string::npos){
+				s2.insert(found,c+"");
+				neighbors.push_back(find_or_create(s2));
+			}
+		}
 	}
 	return neighbors;
 }

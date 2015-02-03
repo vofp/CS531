@@ -3,11 +3,19 @@
 #include "NodeT.hpp"
 #include <vector>
 #include <iostream> 
+#include <string> 
 using namespace std;
+
+struct comp_func{
+	bool operator()( const NodeT* a, const NodeT* b){
+		return(a->f_score< b->f_score);
+	}
+};
 
 class DomainT{
 	public:
 		//void get_map();
+		double best_f_score;
 		int get_towers_size();
 		void get_towers(string);
 		vector< NodeT* > nodesT;
@@ -16,6 +24,10 @@ class DomainT{
 		double get_cost();
 		NodeT* get_start();
 		NodeT* get_goal();
+		NodeT* goal;
+		NodeT* find_or_create(string);
+		NodeT* find(string);
+		NodeT* create(string);
 		//My_map map;
 
 };

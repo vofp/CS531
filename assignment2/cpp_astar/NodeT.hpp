@@ -1,6 +1,7 @@
 #ifndef NODE_T_HPP
 #define NODE_T_HPP
 #include <vector>
+#include <string>
 using namespace std;
 
 class NodeT{
@@ -11,8 +12,11 @@ class NodeT{
 		double g_score, f_score;
 		const bool operator<(const NodeT& other) const;
 		NodeT* parent;
-		NodeT(vector< NodeT* >*);
+		NodeT();
 		void copy(NodeT*);
+		string set_id();
+		string id;
+		// bool same_state(vector< int >,vector< int >,vector< int >);
 };
 
 #endif
