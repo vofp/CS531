@@ -8,9 +8,10 @@
 using namespace std;
 
 vector<NodeT*> rbfs::get_path(DomainT d, NodeT* current, double f_limit){
+	// cout << current->set_id() << endl;
 	NodeT* g = d.get_goal();
 	vector< NodeT*> path;
-	if(current->id.compare(g->id)){
+	if(current->id.compare(g->id) == 0){
 		d.best_f_score = current->f_score;
 		path.push_back(current);
 		return path;

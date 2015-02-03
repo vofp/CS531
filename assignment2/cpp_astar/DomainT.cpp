@@ -11,7 +11,7 @@ void DomainT::get_towers(string s){
 	NodeT *new_node = new NodeT();
 	for(int i = s.size()-1; i >= 0; --i){
 		int n = s[i]-'0';
-		cout << n << endl;
+		// cout << n << endl;
 		new_node->a.push_back(n);
 	}
 	new_node->set_id();
@@ -21,7 +21,7 @@ void DomainT::get_towers(string s){
 	for(unsigned int i = 0; i < s.size(); i++){
 		new_node2->c.push_back(i);
 	}
-	cout << new_node2->set_id() << endl;
+	// cout << new_node2->set_id() << endl;
 	// nodesT.push_back(new_node2);
 	goal = new_node2;
 }
@@ -52,20 +52,24 @@ NodeT* DomainT::find(string s){
 }
 
 NodeT* DomainT::create(string s){
+	cout << "create " << s << endl;
 	NodeT *new_node = new NodeT();
 	unsigned int i = 0;
 	while(i < s.size() && s[i] != '.'){
-		new_node->a.push_back(atoi(s[i]+""));
+		int n = s[i]-'0';
+		new_node->a.push_back(n);
 		i += 1;
 	}
 	i += 1;
-	while(i < s.size() && s[i] != '.'){
-		new_node->b.push_back(atoi(s[i]+""));
+	while(i < s.size() && s[i] != ','){
+		int n = s[i]-'0';
+		new_node->b.push_back(n);
 		i += 1;
 	}
 	i += 1;
-	while(i < s.size() && s[i] != '.'){
-		new_node->c.push_back(atoi(s[i]+""));
+	while(i < s.size()){
+		int n = s[i]-'0';
+		new_node->c.push_back(n);
 		i += 1;
 	}
 	new_node->set_id();
@@ -76,18 +80,25 @@ NodeT* DomainT::create(string s){
 
 vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 	vector<NodeT*> neighbors;
+	string s3;
+	// cin >> s3;
 	if(!current->a.empty()){
-
+		// cout << "a is not empty" << endl;
 		string s (current->id);
 		std::size_t found = s.find('.');
 		if (found!=std::string::npos){
+			// cout << "found . at " << found << endl;
 			char c = s[found-1];
-			s.erase(found-1);
+			s.erase(found-1,1);
 			string s2 (s);
+			// cout << s << endl;
 			found = s.find(',');
 			if (found!=std::string::npos){
-				s.insert(found,c+"");
+				// cout << "found , at " << found << endl;
+				s.insert(s.begin()+found,c);
 				s2.insert(s2.end(),c);
+
+				// cout << "\t\t" << s << "\t" << s2 << endl; 
 
 				neighbors.push_back(find_or_create(s));
 				neighbors.push_back(find_or_create(s2));
@@ -99,11 +110,11 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 		std::size_t found = s.find(',');
 		if (found!=std::string::npos){
 			char c = s[found-1];
-			s.erase(found-1);
+			s.erase(found-1,1);
 			string s2 (s);
 			found = s.find('.');
 			if (found!=std::string::npos){
-				s.insert(found,c+"");
+				s.insert(s.begin()+found,c);
 				s2.insert(s2.end(),c);
 
 				neighbors.push_back(find_or_create(s));
@@ -127,6 +138,11 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 			}
 		}
 	}
+	cout << "neighbors of " << current->set_id() << " :" << endl;
+	for (vector<NodeT*>::iterator n = neighbors.begin(); n != neighbors.end(); ++n){
+		cout << "\t" <<(*n)->set_id() << endl;
+	}
+
 	return neighbors;
 }
 
