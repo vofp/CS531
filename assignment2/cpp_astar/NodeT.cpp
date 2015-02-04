@@ -14,6 +14,7 @@ void NodeT::copy(NodeT* n){
 
 
 NodeT::NodeT(){
+	// g_score = numeric_limits<double>::max();
 	g_score = 0;
 	f_score = 0;
 	// nodesT->push_back(this);
@@ -32,8 +33,8 @@ string NodeT::set_id(){
 	for (vector<int>::iterator i = c.begin(); i != c.end(); ++i){
 		s.append(to_string(*i));
 	}
-	id = s;
-	return id;
+	// id = s;
+	return s;
 }
 // bool NodeT::same_state(vector< int > a,vector< int > b,vector< int > c){
 // 	if(a.size() != this.a.size() &&

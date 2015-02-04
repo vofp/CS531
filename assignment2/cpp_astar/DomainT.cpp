@@ -4,21 +4,23 @@
 using namespace std;
 
 int DomainT::get_towers_size(){
-	return 0;
+	return tower_size;
 }
 
 void DomainT::get_towers(string s){
 	NodeT *new_node = new NodeT();
+	tower_size = s.size(); 
 	for(int i = s.size()-1; i >= 0; --i){
 		int n = s[i]-'0';
-		// cout << n << endl;
+		cout << n << endl;
 		new_node->a.push_back(n);
 	}
-	new_node->set_id();
+	// new_node->f_score = get_heuristic(new_node);
+	cout << "push_back" << endl;
 	nodesT.push_back(new_node);
 
 	NodeT *new_node2 = new NodeT();
-	for(unsigned int i = 0; i < s.size(); i++){
+	for(int i = 0; i < tower_size; i++){
 		new_node2->c.push_back(i);
 	}
 	// cout << new_node2->set_id() << endl;
@@ -44,7 +46,7 @@ NodeT* DomainT::find_or_create(string s){
 
 NodeT* DomainT::find(string s){
 	for (vector<NodeT*>::iterator n = nodesT.begin(); n != nodesT.end(); ++n){
-		if ((*n)->id.compare(s) == 0 ){
+		if ((*n)->set_id().compare(s) == 0 ){
 			return *n;
 		}
 	}
@@ -52,7 +54,7 @@ NodeT* DomainT::find(string s){
 }
 
 NodeT* DomainT::create(string s){
-	cout << "create " << s << endl;
+	cout << "create " << s << " ..." ;
 	NodeT *new_node = new NodeT();
 	unsigned int i = 0;
 	while(i < s.size() && s[i] != '.'){
@@ -74,17 +76,20 @@ NodeT* DomainT::create(string s){
 	}
 	new_node->set_id();
 	nodesT.push_back(new_node);
+	cout << " finish create" << endl;
 	return new_node;
 }
 
 
 vector<NodeT*> DomainT::get_neighbors(NodeT* current){
+	cout << "get_neighbors" << endl;
 	vector<NodeT*> neighbors;
 	string s3;
 	// cin >> s3;
 	if(!current->a.empty()){
+		cout << "a" << endl;
 		// cout << "a is not empty" << endl;
-		string s (current->id);
+		string s (current->set_id());
 		std::size_t found = s.find('.');
 		if (found!=std::string::npos){
 			// cout << "found . at " << found << endl;
@@ -106,7 +111,8 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 		}
 	}
 	if(!current->b.empty()){
-		string s (current->id);
+		cout << "b" << endl;
+		string s (current->set_id());
 		std::size_t found = s.find(',');
 		if (found!=std::string::npos){
 			char c = s[found-1];
@@ -123,59 +129,66 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 		}
 	}
 	if(!current->c.empty()){
-		string s (current->id);
+		cout << "c" << endl;
+		string s (current->set_id());
 		char c = s.back();
-		s.erase(s.end());
+		cout << "get back" << endl;
+		s.pop_back();
+		cout << "erase " << c << " " <<  s << endl;
 		std::size_t found = s.find('.');
 		if (found!=std::string::npos){
 			string s2 (s);
-			s.insert(found,c+"");
+			s.insert(s.begin()+found,c);
+			cout << s << endl;
 			neighbors.push_back(find_or_create(s));
 			found = s2.find(',');
 			if (found!=std::string::npos){
-				s2.insert(found,c+"");
+				s2.insert(s2.begin()+found,c);
 				neighbors.push_back(find_or_create(s2));
 			}
 		}
 	}
-	cout << "neighbors of " << current->set_id() << " :" << endl;
-	for (vector<NodeT*>::iterator n = neighbors.begin(); n != neighbors.end(); ++n){
-		cout << "\t" <<(*n)->set_id() << endl;
-	}
-
+	cout << "finish getting neighbors" << endl;
 	return neighbors;
 }
 
 double DomainT::get_heuristic(NodeT* current){
 	double h = 0.0;
+	cout << current->set_id() << "\t" << endl;
 	for(unsigned int i = 0; i < current->a.size(); ++i) {
+		cout << current->a[i];
 		for (unsigned int j = i+1; j < current->a.size(); ++j)
 		{
 			if(current->a[i] < current->a[j]) {
-				h += 1;
 			}
-			h += current->a[i];
+			h += 1;
 		}
+		h += current->a[i]+1;
+		cout << "\t" << h << endl;
 	}
 	for(unsigned int i = 0; i < current->b.size(); ++i) {
+		cout << current->b[i];
 		for (unsigned int j = i+1; j < current->b.size(); ++j)
 		{
 			if(current->b[i] < current->b[j]) {
-				h += 1;
 			}
-			h += current->b[i];
+			h += 1;
 		}
+		h += current->b[i]+1;
+		cout << "\t" << h << endl;
 	}
 	for(unsigned int i = 0; i < current->c.size(); ++i) {
+		cout << current->c[i];
 		for (unsigned int j = i+1; j < current->c.size(); ++j)
 		{
-			if(current->c[i] != (signed)i+1) {
+			if(current->c[i] != (signed)i) {
 				if(current->c[i] < current->c[j]) {
 					h += 1;
 				}
 				h += current->c[i];
 			}
 		}
+		cout << "\t" << h << endl;
 	}
 	return h;
 }

@@ -17,6 +17,7 @@ class DomainT{
 		//void get_map();
 		double best_f_score;
 		int get_towers_size();
+		int tower_size;
 		void get_towers(string);
 		vector< NodeT* > nodesT;
 		vector< NodeT* > get_neighbors(NodeT*);

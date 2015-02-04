@@ -2,6 +2,7 @@
 #define NODE_T_HPP
 #include <vector>
 #include <string>
+#include <limits> 
 using namespace std;
 
 class NodeT{
@@ -15,7 +16,7 @@ class NodeT{
 		NodeT();
 		void copy(NodeT*);
 		string set_id();
-		string id;
+		// string id;
 		// bool same_state(vector< int >,vector< int >,vector< int >);
 };
 
