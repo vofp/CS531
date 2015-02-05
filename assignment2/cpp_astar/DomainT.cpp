@@ -129,7 +129,7 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 	return neighbors;
 }
 
-double DomainT::get_heuristic(NodeT* current){
+double DomainT::get_heuristic2(NodeT* current){
 	double h = 0.0;
 	for(unsigned int i = 0; i < current->a.size(); ++i) {
 		for (unsigned int j = i+1; j < current->a.size(); ++j)
@@ -156,6 +156,25 @@ double DomainT::get_heuristic(NodeT* current){
 				if(current->c[i] < current->c[j]) {
 					h += 1;
 				}
+				h += current->c[i];
+			}
+		}
+	}
+	return h;
+}
+
+double DomainT::get_heuristic(NodeT* current){
+	double h = 0.0;
+	for(unsigned int i = 0; i < current->a.size(); ++i) {
+		h += current->a[i]+1;
+	}
+	for(unsigned int i = 0; i < current->b.size(); ++i) {
+		h += current->b[i]+1;
+	}
+	for(unsigned int i = 0; i < current->c.size(); ++i) {
+		for (unsigned int j = i+1; j < current->c.size(); ++j)
+		{
+			if(current->c[i] != (signed)i) {
 				h += current->c[i];
 			}
 		}

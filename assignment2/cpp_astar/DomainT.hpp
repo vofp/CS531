@@ -22,6 +22,7 @@ class DomainT{
 		vector< NodeT* > nodesT;
 		vector< NodeT* > get_neighbors(NodeT*);
 		double get_heuristic(NodeT*);
+		double get_heuristic2(NodeT*);
 		double get_cost();
 		NodeT* get_start();
 		NodeT* get_goal();
