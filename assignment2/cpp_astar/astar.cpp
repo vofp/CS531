@@ -22,7 +22,7 @@ astar::~astar(){
 */
 
 vector<NodeT*> astar::get_path(DomainT* d){
-	 cout << "help" << endl;
+	 // cout << "help" << endl;
 	 NodeT* start;
 	 NodeT* goal;
 	 start = d->get_start();
@@ -31,21 +31,21 @@ vector<NodeT*> astar::get_path(DomainT* d){
 	 vector<NodeT*> open_set;
 	 start->g_score = 0;
 	 start->f_score = start->g_score + d->get_heuristic(start);
-	 cout << start->f_score << endl;
+	 // cout << start->f_score << endl;
 	 open_set.push_back(start);
-	 cout << endl << open_set[0] << endl;
+	 // cout << endl << open_set[0] << endl;
 	 NodeT* current;
-	 cout << "BEFORE ASTAR" << endl;
+	 // cout << "BEFORE ASTAR" << endl;
 	 int timeout = 0;
 	 int iter = 0;
-	 while(open_set.size()!=0 && timeout < 1000){
+	 while(open_set.size()!=0 && timeout < 10000){
 	 	comp_func c;
 	 	sort(open_set.begin(), open_set.end(), c);
 	 	current = open_set[0];
 	 	//cout << endl << current->x << "    " << current->y<< endl ;
 	 	if(current->set_id().compare(goal->set_id()) == 0){
-	 		cout << endl << "GOALLL"<< endl;
-	 		cout << endl << "Loop Count :" << timeout << endl;
+	 		// cout << endl << "GOALLL"<< endl;
+	 		// cout << endl << "Loop Count :" << timeout << endl;
 	 		vector< NodeT*> path;
 	 		while(current->set_id().compare(d->get_start()->set_id()) != 0){
 	 			//cout << "PATH" << current << endl;
@@ -54,11 +54,11 @@ vector<NodeT*> astar::get_path(DomainT* d){
 	 			current = current->parent;
 	 		}
 			
-	 		for(int i = 0; i < path.size(); i++){
-	 			cout << endl << path[i]->set_id() << endl;
-	 		}
-			cout << endl << start->set_id() << endl;
-	 		cout << endl << "PATH LENGTH :" << path.size() << endl;
+	 		// for(int i = 0; i < path.size(); i++){
+	 		// 	cout << endl << path[i]->set_id() << endl;
+	 		// }
+			// cout << endl << start->set_id() << endl;
+	 		// cout << endl << "PATH LENGTH :" << path.size() << endl;
 	 		return path;
 	 	}
 	 	open_set.erase(open_set.begin());
@@ -78,13 +78,13 @@ vector<NodeT*> astar::get_path(DomainT* d){
 	 			if(!in_open_set){
 	 				open_set.push_back(*i);
 	 				iter ++;
-	 				cout << endl << "NODES EXPANDED  " << iter << "\t "<< current->set_id() << endl;
+	 				// cout << endl << "NODES EXPANDED  " << iter << "\t "<< current->set_id() << endl;
 	 			}
 	 		}
 	 	}
 	 	timeout++;
 	 	//cout << endl << open_set[0];	
 	 }
-	 cout << "OUT OF PATH";	
+	 // cout << "OUT OF PATH";	
 }
 
