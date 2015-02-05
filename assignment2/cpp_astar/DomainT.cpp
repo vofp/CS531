@@ -12,11 +12,11 @@ void DomainT::get_towers(string s){
 	tower_size = s.size(); 
 	for(int i = s.size()-1; i >= 0; --i){
 		int n = s[i]-'0';
-		cout << n << endl;
+	//	cout << n << endl;
 		new_node->a.push_back(n);
 	}
 	// new_node->f_score = get_heuristic(new_node);
-	cout << "push_back" << endl;
+	//cout << "push_back" << endl;
 	nodesT.push_back(new_node);
 
 	NodeT *new_node2 = new NodeT();
@@ -26,6 +26,7 @@ void DomainT::get_towers(string s){
 	// cout << new_node2->set_id() << endl;
 	// nodesT.push_back(new_node2);
 	goal = new_node2;
+	best_f_score = 0;
 }
 
 NodeT* DomainT::get_start(){
@@ -54,7 +55,7 @@ NodeT* DomainT::find(string s){
 }
 
 NodeT* DomainT::create(string s){
-	cout << "create " << s << " ..." ;
+	//cout << "create " << s << " ..." ;
 	NodeT *new_node = new NodeT();
 	unsigned int i = 0;
 	while(i < s.size() && s[i] != '.'){
@@ -76,18 +77,18 @@ NodeT* DomainT::create(string s){
 	}
 	new_node->set_id();
 	nodesT.push_back(new_node);
-	cout << " finish create" << endl;
+	//cout << " finish create" << endl;
 	return new_node;
 }
 
 
 vector<NodeT*> DomainT::get_neighbors(NodeT* current){
-	cout << "get_neighbors" << endl;
+	//cout << "get_neighbors" << endl;
 	vector<NodeT*> neighbors;
 	string s3;
 	// cin >> s3;
 	if(!current->a.empty()){
-		cout << "a" << endl;
+		//cout << "a" << endl;
 		// cout << "a is not empty" << endl;
 		string s (current->set_id());
 		std::size_t found = s.find('.');
@@ -111,7 +112,7 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 		}
 	}
 	if(!current->b.empty()){
-		cout << "b" << endl;
+		//cout << "b" << endl;
 		string s (current->set_id());
 		std::size_t found = s.find(',');
 		if (found!=std::string::npos){
@@ -129,17 +130,17 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 		}
 	}
 	if(!current->c.empty()){
-		cout << "c" << endl;
+		//cout << "c" << endl;
 		string s (current->set_id());
 		char c = s.back();
-		cout << "get back" << endl;
+		//cout << "get back" << endl;
 		s.pop_back();
-		cout << "erase " << c << " " <<  s << endl;
+		//cout << "erase " << c << " " <<  s << endl;
 		std::size_t found = s.find('.');
 		if (found!=std::string::npos){
 			string s2 (s);
 			s.insert(s.begin()+found,c);
-			cout << s << endl;
+		//	cout << s << endl;
 			neighbors.push_back(find_or_create(s));
 			found = s2.find(',');
 			if (found!=std::string::npos){
@@ -148,7 +149,7 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 			}
 		}
 	}
-	cout << "finish getting neighbors" << endl;
+	//cout << "finish getting neighbors" << endl;
 	return neighbors;
 }
 

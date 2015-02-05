@@ -43,25 +43,23 @@ vector<NodeT*> astar::get_path(DomainT d){
 	 	sort(open_set.begin(), open_set.end(), c);
 	 	current = open_set[0];
 	 	//cout << endl << current->x << "    " << current->y<< endl ;
-	 	if(current == goal){
+	 	if(current->set_id().compare(goal->set_id()) == 0){
 	 		cout << endl << "GOALLL"<< endl;
 	 		cout << endl << "Loop Count :" << timeout << endl;
 	 		vector< NodeT*> path;
-	 		while(current != d.get_start()){
+	 		while(current->set_id().compare(d.get_start()->set_id()) != 0){
 	 			//cout << "PATH" << current << endl;
 	 			//cout << endl << current->x << "    " << current->y<< endl ;
 	 			path.push_back(current);
 	 			current = current->parent;
 	 		}
-			/*
+			
 	 		for(int i = 0; i < path.size(); i++){
-	 			cout << endl << path[i]->x << "  " << path[i]->y<< endl;
+	 			cout << endl << path[i]->set_id() << endl;
 	 		}
+			cout << endl << start->set_id() << endl;
 	 		cout << endl << "PATH LENGTH :" << path.size() << endl;
 	 		return path;
-	 		//break;
-			*/
-			return path;
 	 	}
 	 	open_set.erase(open_set.begin());
 	 	closed_set.push_back(current);
@@ -80,7 +78,7 @@ vector<NodeT*> astar::get_path(DomainT d){
 	 			if(!in_open_set){
 	 				open_set.push_back(*i);
 	 				iter ++;
-	 				cout << endl << "NODES EXPANDED" << iter << endl;
+	 				cout << endl << "NODES EXPANDED  " << iter << "\t "<< current->set_id() << endl;
 	 			}
 	 		}
 	 	}
