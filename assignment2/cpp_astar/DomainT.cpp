@@ -150,6 +150,7 @@ vector<NodeT*> DomainT::get_neighbors(NodeT* current){
 		}
 	}
 	//cout << "finish getting neighbors" << endl;
+	cout << endl <<  "nodesT size:   " << nodesT.size() << endl;
 	return neighbors;
 }
 

@@ -18,8 +18,9 @@ int main(int argc, char **argv){
 	 //astar astar1;
 	 cout << endl << "BEFORE GET PATH" << endl;
 	 vector< NodeT*> path;
-	 //path = astar1.get_path(Dom1);
+	 //path = astar1.get_path(&Dom1);
 	 rbfs rbfs1;
-	 path = rbfs1.get_path(Dom1, Dom1.get_start(), numeric_limits<double>::max(),0);
+	 path = rbfs1.get_path(&Dom1, Dom1.get_start(), numeric_limits<double>::max(),0);
+	 cout << Dom1.nodesT.size() << endl;
 	 return 0;
 }

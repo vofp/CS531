@@ -7,7 +7,7 @@
 class rbfs{
 	public:
 		//vector< NodeT* > path;
-		vector< NodeT*>  get_path(DomainT, NodeT*, double,int);
+		vector< NodeT*>  get_path(DomainT*, NodeT*, double,int);
 
 		//astar(void);
 		//~astar(void);

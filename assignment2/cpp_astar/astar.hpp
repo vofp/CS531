@@ -6,7 +6,7 @@
 class astar{
 	public:
 		//vector< NodeT* > path;
-		vector< NodeT*>  get_path(DomainT);
+		vector< NodeT*>  get_path(DomainT*);
 
 		//astar(void);
 		//~astar(void);
