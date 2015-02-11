@@ -3,12 +3,13 @@
 
 using namespace std;
 
-struct A
+class A
 {
+public:
 	vector<int> a[2][2];
 };
 
-int test(struct A a){
+int test(A a){
 	a.a[0][0][0] += 1;
 	cout << a.a[0][0][0] << a.a[0][0][1] << endl;
 }
