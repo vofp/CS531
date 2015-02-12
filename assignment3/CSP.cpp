@@ -33,6 +33,8 @@ public:
 
 // 123000000456000000700000000070000000000000000000000000007000000000000000000000000
 
+// 120000700304700000056000000000000000000000000000000000000000000000000000000000000 
+
 Domain::Domain(string s){
 	for (int x = 0; x < 9; ++x){
 		for (int y = 0; y < 9; ++y){
@@ -191,7 +193,52 @@ int Domain::applyR2(){
 			}
 		}
 	}
-
+	// 00 01 02
+	// 10 11 12
+	// 20 21 22
+	for (int a = 0; a < 3; ++a){
+		for (int b = 0; b < 3; ++b){
+			vector<int> box;
+			int x = a*3;
+			int y = b*3;
+			for (int i = 0; i < 3; ++i){
+				for (int j = 0; j < 3; ++j){
+					box.insert(box.end(),board[x+i][y+j].begin(),board[x+i][y+j].end());
+				}
+			}
+			int count[10] = {0, 0,0,0,0,0, 0,0,0,0};
+			for (vector<int>::iterator n = box.begin(); n != box.end(); ++n){
+				count[*n]++;
+			}
+			for (int k = 1; k <= 9; ++k){
+				if(count[k] == 1) {
+					int checki = -1;
+					int checkj = -1;
+					for (int i = 0; i < 3; ++i){
+						for (int j = 0; j < 3; ++j){
+							if(set[x+i][y+j] == 0){
+								for (vector<int>::iterator n = board[x+i][y+j].begin(); n != board[x+i][y+j].end() && checki == -1; ++n){
+									if(*n == k){
+										checki = i;
+										checkj = j;
+									}
+								}
+							}
+						}
+					}
+					if(checki != -1){
+						board[x+checki][y+checkj].clear();
+						board[x+checki][y+checkj].push_back(k);
+						set[x+checki][y+checkj] = k;
+						if (propagation(x+checki,y+checkj) == -1 ){
+							cout << "backtrack" << endl;
+							return -1;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 int Domain::printBoard(){
@@ -216,7 +263,9 @@ int Domain::printBoard(){
 int main(int argc, char const *argv[]) {
 	// Domain d ("240300000000520407000046008610700084009060500730005061100470000302051000000002019");
 	// Domain d ("120700000340000700560000000000000000000000000000000000000000000000000000000000000");
-	Domain d ("123000000456000000000000000070000000000000000000000000007000000000000000000000000");
+	// Domain d ("123000000456000000000000000070000000000000000000000000007000000000000000000000000");
+	Domain d ("120000700304700000056000000000000000000000000000000000000000000000000000000000000");
+
 
 
 	d.applyR1();
