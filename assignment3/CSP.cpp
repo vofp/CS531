@@ -14,6 +14,7 @@ public:
 	int removeV(int x, int y, int n);
 	int applyR1();
 	int applyR2();
+	int printBoard();
 };
 
 // 240 300 000 
@@ -27,6 +28,10 @@ public:
 // 000 002 019
 
 // 240300000000520407000046008610700084009060500730005061100470000302051000000002019
+
+// 120700000340000700567000000000000000000000000000000000000000000000000000000000000
+
+// 123000000456000000700000000070000000000000000000000000007000000000000000000000000
 
 Domain::Domain(string s){
 	for (int x = 0; x < 9; ++x){
@@ -178,7 +183,7 @@ int Domain::applyR2(){
 					board[check][i].clear();
 					board[check][i].push_back(k);
 					set[check][i] = k;
-					if (propagation(count,i) == -1 ){
+					if (propagation(check,i) == -1 ){
 						cout << "backtrack" << endl;
 						return -1;
 					}
@@ -189,23 +194,50 @@ int Domain::applyR2(){
 
 }
 
-int checkSubDomain()
+int Domain::printBoard(){
+	for (int i = 0; i < 9; ++i)
+	{
+		if(i%3 == 0){
+			cout << endl;
+		}
+		for (int j = 0; j < 9; ++j)
+		{
+			if(j%3 == 0){
+				cout << " ";
+			}
+			cout << set[i][j];
+		}
+		cout << endl;
+	}
+}
+
+// int checkSubDomain()
 
 int main(int argc, char const *argv[]) {
-	Domain d ("240300000000520407000046008610700084009060500730005061100470000302051000000002019");
+	// Domain d ("240300000000520407000046008610700084009060500730005061100470000302051000000002019");
+	// Domain d ("120700000340000700560000000000000000000000000000000000000000000000000000000000000");
+	Domain d ("123000000456000000000000000070000000000000000000000000007000000000000000000000000");
 
 
+	d.applyR1();
 
-	cout << d.board[0][0].size() << d.board[0][2][5] << endl;
+	// cout << d.board[0][0].size() << d.board[0][2][5] << endl;
+	d.printBoard();
+
+	cout << endl <<endl<<endl;
+
+	d.applyR2();
+
+	d.printBoard();
 
 
 }
 
 int backtrack(Domain d){
-	if(applyR1() == -1){
+	if(d.applyR1() == -1){
 		return -1;
 	}
-	if(applyR2() == -1){
+	if(d.applyR2() == -1){
 		return -1;
 	}
 	
