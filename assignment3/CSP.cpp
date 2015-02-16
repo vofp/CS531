@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string> 
+#include <algorithm>
 
 using namespace std;
 
@@ -9,6 +10,12 @@ class Domain
 public:
 	vector<int> board[9][9];
 	int set[9][9];
+	int searchX;
+	int searchY;
+	int values[9];
+	int counter;
+	int spotsSearched;
+	bool solved;
 	Domain(string s);
 	int propagation(int x, int y);
 	int removeV(int x, int y, int n);
@@ -16,6 +23,7 @@ public:
 	int applyR2();
 	int printBoard();
 	int setValue(int x, int y, int n);
+	int findMostConstrained();
 };
 
 // 240 300 000 
@@ -51,7 +59,11 @@ Domain::Domain(string s){
 				set[x][y] = 0;
 			}
 		}
+		values[x] = 0;
 	}
+	counter = -1;
+	spotsSearched = 0;
+	solved = false;
 	// for (int x = 0; x < 9; ++x){
 	// 	for (int y = 0; y < 9; ++y){
 	// 		if(set[x][y] != 0){
@@ -112,6 +124,7 @@ int Domain::removeV(int x, int y, int n){
 }
 
 int Domain::setValue(int x, int y, int n){
+	// cout << x << ", " << y  << "   "<< n << endl;
 	set[x][y] = n;
 	if (propagation(x,y) == -1 ){
 		cout << "backtrack" << endl;
@@ -119,6 +132,8 @@ int Domain::setValue(int x, int y, int n){
 	}
 	board[x][y].clear();
 	board[x][y].push_back(set[x][y]);
+	// cout << "set " << set[x][y]<< endl;
+	spotsSearched++;
 }
 
 int Domain::applyR1(){
@@ -126,6 +141,7 @@ int Domain::applyR1(){
 	for (int x = 0; x < 9; ++x){
 		for (int y = 0; y < 9; ++y){
 			if(set[x][y] == 0 && board[x][y].size() == 1){
+				// cout << x << ", " << y << endl;
 				if(setValue(x,y,board[x][y][0]) == -1){
 					return -1;
 				}
@@ -263,35 +279,178 @@ int Domain::printBoard(){
 }
 
 // int checkSubDomain()
+int Domain::findMostConstrained(){
+	int max_constr = 0;
+	int max_cell_x = 0;
+	int max_cell_y = 0;
+	int max_count[10] = {0, 0,0,0,0,0, 0,0,0,0};
+
+	for (int x = 0; x < 9; ++x)
+	{
+		for (int y = 0; y < 9; ++y)
+		{
+			if (set[x][y] == 0)
+			{
+				int count[10] = {0, 0,0,0,0,0, 0,0,0,0};
+				for (int i = 0; i < 9; ++i)
+				{
+					if (i !=x )
+					{
+						for (std::vector<int>::iterator n = board[i][y].begin(); n != board[i][y].end(); ++n)
+						{
+							count[*n]++;
+						}
+					}
+					if (i !=y )
+					{
+						for (std::vector<int>::iterator n = board[x][i].begin(); n != board[x][i].end(); ++n)
+						{
+							count[*n]++;
+						}
+					}
+					int a = x/3;
+					int b = y/3;
+					a *= 3;
+					b *= 3;
+					int k = a + (i % 3);
+					int j = b + (i / 3);
+					if (k != x && j != y)
+					{
+						for (std::vector<int>::iterator n = board[k][j].begin(); n != board[k][j].end(); ++n)
+						{
+							count[*n]++;
+						}
+					}
+				}
+				int num_constr = 0;
+				for (std::vector<int>::iterator n = board[x][y].begin(); n != board[x][y].end(); ++n)
+				{
+					num_constr += count[*n];
+				}
+				if(num_constr > max_constr){
+					max_constr = num_constr;
+					max_cell_x = x;
+					max_cell_y = y;
+					copy(count, count + 10, max_count);
+				}
+			}
+		}
+	}
+	searchX = max_cell_x;
+	searchY = max_cell_y;
+	int count[10] = {0, 0,0,0,0,0, 0,0,0,0};
+	int con[10] = {0, 0,0,0,0,0, 0,0,0,0};
+	copy(max_count, max_count + 10, count);
+	sort(count, count + 10);
+	for (std::vector<int>::iterator i = board[searchX][searchY].begin(); i != board[searchX][searchY].end(); ++i)
+	{
+		con[*i] = 1;
+	}
+	int counter = 0;
+	for (int i = 0; i < 10; ++i)
+	{
+		for (int j = 1; j <= 9; ++j)
+		{
+			if(count[i] != 0 && count[i] == max_count[j] && con[j] == 1){
+
+				values[counter] = j;
+				counter++;
+				cout << j << ": " << count[i] << endl;
+				max_count[j] = 0;
+			}
+		}
+	}
+	for (int i = counter; i < 9; ++i)
+	{
+		values[i] = 0;
+	}
+	return 0;
+}
 
 
-int backtrack(Domain d){
+
+Domain backtrack(Domain d){
+	// d.printBoard();
+	// char c;
+	// cin >> c;
+	// cout << "set value" << endl;
+	if(d.counter != -1){
+		if(d.setValue(d.searchX, d.searchY, d.values[d.counter]) == -1){
+			return d;
+		}
+	}
+	// cout << "rules" << endl;
 	int counter = 1;
 	while(counter != 0){
 		counter = d.applyR1();
+		// cout << counter << endl;
 		if(counter == -1){
-			return -1;
+			return d;
 		}
 		int r = d.applyR2();
 		if(r == -1){
-			return -1;
+			return d;
 		}
+		// cout << r << endl;
 		counter += r;
+		// cout << counter << endl;
+		// d.printBoard();
+		// char c;
+		// cin >> c;
 	}
-	d.printBoard();
-	
-	
+	// d.printBoard();
+	d.spotsSearched = 0;
+	for (int x = 0; x < 9; ++x)
+	{
+		for (int y = 0; y < 9; ++y)
+		{
+			if(d.set[x][y] != 0){
+				d.spotsSearched++;
+			}
+		}
+	}
+	// cout << "searched" << d.spotsSearched << endl;
+	if(d.spotsSearched == 81){
+		cout << "solved" << endl;
+		d.solved = true;
+		return d;
+	}
+	d.findMostConstrained();
+	cout << "(" << d.searchX << "," << d.searchY << ") ";
+	for (int i = 0; i < 9; ++i)
+	{
+		cout << d.values[i] << ", ";
+	}
+	cout << endl;
+	for (int i = 0; i < 9; ++i)
+	{
+		d.counter = i;
+		if(d.values[d.counter] == 0){
+			return d;
+		}
+		Domain r = backtrack(d);
+		if(r.solved){
+			return r;
+		}
+		
+	}
+	return d;
 }
 
 
 int main(int argc, char const *argv[]) {
-	// Domain d ("240300000000520407000046008610700084009060500730005061100470000302051000000002019");
-	Domain d ("120700000340000700560000000000000000000000000000000000000000000000000000000000000");
+	// Domain d ("120700000340000700560000000000000000000000000000000000000000000000000000000000000");
 	// Domain d ("123000000456000000000000000070000000000000000000000000007000000000000000000000000");
 	// Domain d ("120000700304700000056000000000000000000000000000000000000000000000000000000000000");
+	// Domain d ("240300000000520407000046008610700084009060500730005061100470000302051000000002019");
+	// Domain d ("003010008000400030870003020010009605300867002906500040020900074090006000500070100");
+	// Domain d ("170000006006090040300070000000900030094020870030005000000060001080010500500000082");
+    Domain d ("000006009090300108076000402000800005000502000900003000409000830605004090700100000");
 
+	// d.counter = -1;
+	Domain r = backtrack(d);
 
-	backtrack(d);
+	r.printBoard();
 
 	// d.applyR1();
 
@@ -314,7 +473,7 @@ int main(int argc, char const *argv[]) {
 	// cout << endl <<endl<<endl;
 
 	// d.applyR2();
-	d.printBoard();
+	// d.printBoard();
 
 
 }
