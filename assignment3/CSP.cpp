@@ -15,6 +15,7 @@ public:
 	int applyR1();
 	int applyR2();
 	int printBoard();
+	int setValue(int x, int y, int n);
 };
 
 // 240 300 000 
@@ -110,22 +111,33 @@ int Domain::removeV(int x, int y, int n){
 	return board[x][y].size();
 }
 
+int Domain::setValue(int x, int y, int n){
+	set[x][y] = n;
+	if (propagation(x,y) == -1 ){
+		cout << "backtrack" << endl;
+		return -1;
+	}
+	board[x][y].clear();
+	board[x][y].push_back(set[x][y]);
+}
+
 int Domain::applyR1(){
+	int count = 0;
 	for (int x = 0; x < 9; ++x){
 		for (int y = 0; y < 9; ++y){
 			if(set[x][y] == 0 && board[x][y].size() == 1){
-				set[x][y] = board[x][y][0];
-				if (propagation(x,y) == -1 ){
-					cout << "backtrack" << endl;
+				if(setValue(x,y,board[x][y][0]) == -1){
 					return -1;
 				}
-				board[x][y].push_back(set[x][y]);
+				count++;
 			}
 		}
 	}
+	return count;
 }
 // vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
 int Domain::applyR2(){
+	int counter = 0;
 	for (int i = 0; i < 9; ++i){
 		vector<int> row;
 		vector<int> col;
@@ -154,13 +166,10 @@ int Domain::applyR2(){
 					}
 				}
 				if(check != -1){
-					board[i][check].clear();
-					board[i][check].push_back(k);
-					set[i][check] = k;
-					if (propagation(i,check) == -1 ){
-						cout << "backtrack" << endl;
+					if (setValue(i,check,k) == -1 ){
 						return -1;
 					}
+					counter++;
 				}
 			}
 		}
@@ -182,13 +191,10 @@ int Domain::applyR2(){
 					}
 				}
 				if(check != -1){
-					board[check][i].clear();
-					board[check][i].push_back(k);
-					set[check][i] = k;
-					if (propagation(check,i) == -1 ){
-						cout << "backtrack" << endl;
+					if (setValue(check,i,k) == -1 ){
 						return -1;
 					}
+					counter++;
 				}
 			}
 		}
@@ -227,18 +233,16 @@ int Domain::applyR2(){
 						}
 					}
 					if(checki != -1){
-						board[x+checki][y+checkj].clear();
-						board[x+checki][y+checkj].push_back(k);
-						set[x+checki][y+checkj] = k;
-						if (propagation(x+checki,y+checkj) == -1 ){
-							cout << "backtrack" << endl;
+						if (setValue(x+checki,y+checkj,k) == -1 ){
 							return -1;
 						}
+						counter++;
 					}
 				}
 			}
 		}
 	}
+	return counter;
 }
 
 int Domain::printBoard(){
@@ -260,34 +264,57 @@ int Domain::printBoard(){
 
 // int checkSubDomain()
 
-int main(int argc, char const *argv[]) {
-	// Domain d ("240300000000520407000046008610700084009060500730005061100470000302051000000002019");
-	// Domain d ("120700000340000700560000000000000000000000000000000000000000000000000000000000000");
-	// Domain d ("123000000456000000000000000070000000000000000000000000007000000000000000000000000");
-	Domain d ("120000700304700000056000000000000000000000000000000000000000000000000000000000000");
-
-
-
-	d.applyR1();
-
-	// cout << d.board[0][0].size() << d.board[0][2][5] << endl;
-	d.printBoard();
-
-	cout << endl <<endl<<endl;
-
-	d.applyR2();
-
-	d.printBoard();
-
-
-}
 
 int backtrack(Domain d){
-	if(d.applyR1() == -1){
-		return -1;
+	int counter = 1;
+	while(counter != 0){
+		counter = d.applyR1();
+		if(counter == -1){
+			return -1;
+		}
+		int r = d.applyR2();
+		if(r == -1){
+			return -1;
+		}
+		counter += r;
 	}
-	if(d.applyR2() == -1){
-		return -1;
-	}
+	d.printBoard();
 	
+	
+}
+
+
+int main(int argc, char const *argv[]) {
+	// Domain d ("240300000000520407000046008610700084009060500730005061100470000302051000000002019");
+	Domain d ("120700000340000700560000000000000000000000000000000000000000000000000000000000000");
+	// Domain d ("123000000456000000000000000070000000000000000000000000007000000000000000000000000");
+	// Domain d ("120000700304700000056000000000000000000000000000000000000000000000000000000000000");
+
+
+	backtrack(d);
+
+	// d.applyR1();
+
+	// cout << d.board[0][0].size() << d.board[0][2][5] << endl;
+	// d.printBoard();
+
+	// cout << endl <<endl<<endl;
+
+	// d.applyR2();
+	// d.printBoard();
+
+	// cout << endl <<endl<<endl;
+
+
+	// d.applyR1();
+
+	// // cout << d.board[0][0].size() << d.board[0][2][5] << endl;
+	// d.printBoard();
+
+	// cout << endl <<endl<<endl;
+
+	// d.applyR2();
+	d.printBoard();
+
+
 }
