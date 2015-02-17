@@ -24,6 +24,7 @@ public:
 	int printBoard();
 	int setValue(int x, int y, int n);
 	int findMostConstrained();
+	int nextCell();
 };
 
 // 240 300 000 
@@ -278,6 +279,30 @@ int Domain::printBoard(){
 	}
 }
 
+int Domain::nextCell(){
+	for (int x = 0; x < 9; ++x)
+	{
+		for (int y = 0; y < 9; ++y)
+		{
+			if (set[x][y] == 0)
+			{
+				searchX = x;
+				searchY = y;
+				int counter = 0;
+				for (std::vector<int>::iterator i = board[searchX][searchY].begin(); i != board[searchX][searchY].end(); ++i)
+				{
+					values[counter] = *i;
+					counter++;
+				}
+				for (int i = counter; i < 9; ++i)
+				{
+					values[i] = 0;
+				}
+			}
+		}
+	}
+}
+
 // int checkSubDomain()
 int Domain::findMostConstrained(){
 	int max_constr = 0;
@@ -415,7 +440,8 @@ Domain backtrack(Domain d){
 		d.solved = true;
 		return d;
 	}
-	d.findMostConstrained();
+	// d.findMostConstrained();
+	d.nextCell();
 	cout << "(" << d.searchX << "," << d.searchY << ") ";
 	for (int i = 0; i < 9; ++i)
 	{
