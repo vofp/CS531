@@ -19,6 +19,8 @@ public:
 	int num_backtrack;
 	bool rule2;
 	bool rule3; 
+	bool mostConstrained;
+	int numsGiven;
 	Domain(string s);
 	int propagation(int x, int y);
 	int removeV(int x, int y, int n);
@@ -53,6 +55,7 @@ public:
 // 120000700304700000056000000000000000000000000000000000000000000000000000000000000 
 
 Domain::Domain(string s){
+	numsGiven = 0;
 	for (int x = 0; x < 9; ++x){
 		for (int y = 0; y < 9; ++y){
 			char c = s[x*9+y];
@@ -60,6 +63,7 @@ Domain::Domain(string s){
 				for(int i = 1; i <= 9; ++i){
 					board[x][y].push_back(i);
 				}
+				numsGiven++;
 				set[x][y] = 0;
 			} else {
 				int n = c-'0';
@@ -274,7 +278,7 @@ int Domain::applyR2(){
 int Domain::applyR3(){
 	applyR3R();
 	applyR3C();
-	// applyR3B();
+	applyR3B();
 }
 
 int Domain::applyR3R(){
@@ -375,8 +379,8 @@ int Domain::applyR3C(){
 
 int Domain::applyR3B(){
 	int counter = 0;
-	for (int a = 0; a < 9; ++a){
-		for (int b = 0; b < 9; ++b){
+	for (int a = 0; a < 3; ++a){
+		for (int b = 0; b < 3; ++b){
 			int c[9];
 			for (int i = 0; i < 9; ++i){
 				int x = a*3 + i/3;
@@ -385,7 +389,6 @@ int Domain::applyR3B(){
 					c[i] = 0;
 					for (vector<int>::iterator h = board[x][y].begin(); h != board[x][y].end(); ++h){
 						c[i] *= 10;
-						// int h = *n;
 						c[i] += *h;
 					}
 				} else {
@@ -609,12 +612,15 @@ Domain backtrack(Domain d){
 	}
 	// cout << "searched" << d.spotsSearched << endl;
 	if(d.spotsSearched == 81){
-		cout << "solved" << endl;
+		// cout << "solved" << endl;
 		d.solved = true;
 		return d;
 	}
-	// d.findMostConstrained();
-	d.nextCell();
+	if(d.mostConstrained){
+		d.findMostConstrained();
+	} else {
+		d.nextCell();
+	}
 	// cout << "(" << d.searchX << "," << d.searchY << ") ";
 	// for (int i = 0; i < 9; ++i)
 	// {
@@ -631,13 +637,13 @@ Domain backtrack(Domain d){
 		if(r.solved){
 			return r;
 		}
-		cout << "backtrack" << endl;
+		// cout << "backtrack" << endl;
 		d.num_backtrack++;
 	}
 	return d;
 }
 
-int testFile(string filename,bool r2, bool r3 ){
+int testFile(string filename,bool r2, bool r3 , bool c){
 	string line;
 
 
@@ -646,21 +652,36 @@ int testFile(string filename,bool r2, bool r3 ){
 		clock_t t;
 		t = 0;
 		int counter = 0;
+		int bt_counter = 0;
+		int bt_used_counter = 0;
+		int given = 0;
 		while ( getline (file,line) ){
 			clock_t t1;
     		t1 = clock();
 			Domain d (line);
 			d.rule2 = r2;
 			d.rule3 = r3;
+			d.mostConstrained = c;
 			Domain r = backtrack(d);
 			t1 = clock() - t1;
 			t += t1;
-			cout << "time " << t1 << endl;
-			cout << "backtrack " << r.num_backtrack << endl;
-			r.printBoard();
+			// cout << "time " << t1 << endl;
+			// cout << "backtrack " << r.num_backtrack << endl;
+			bt_counter += r.num_backtrack;
+			if(r.num_backtrack != 0){
+				bt_used_counter++;
+			}
+			given += r.numsGiven;
+			// r.printBoard();
 			counter++;
 		}
+		cout << "settings " << r2 << r3 << c << endl;
+		cout << "numsGiven " << (given*1.0)/counter << endl;
+		cout << "\% of problems used " << (bt_used_counter*1.0)/counter << endl;
+		cout << "avg bt "<< (bt_counter*1.0)/counter << endl;
+		cout << "total bt "<< bt_counter << endl;
 		cout << "avg time " << (t*1.0)/counter << endl;
+		cout << endl;
 		file.close();
 	}
 	else cout << "Unable to open file"; 
@@ -683,7 +704,10 @@ int main(int argc, char const *argv[]) {
 
 	// testFile("easy.txt");
 	string filename (argv[1]);
-	testFile(filename,true,true);
+	testFile(filename,false,false,false);
+	testFile(filename,true,false,false);
+	testFile(filename,true,true,false);
+	testFile(filename,true,true,true);
 
 	// d.applyR1();
 
