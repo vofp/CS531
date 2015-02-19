@@ -671,17 +671,25 @@ int testFile(string filename,bool r2, bool r3 , bool c){
 			if(r.num_backtrack != 0){
 				bt_used_counter++;
 			}
+			cout << r.numsGiven <<endl;
 			given += r.numsGiven;
 			// r.printBoard();
 			counter++;
 		}
-		cout << "settings " << r2 << r3 << c << endl;
-		cout << "numsGiven " << (given*1.0)/counter << endl;
-		cout << "\% of problems used " << (bt_used_counter*1.0)/counter << endl;
-		cout << "avg bt "<< (bt_counter*1.0)/counter << endl;
-		cout << "total bt "<< bt_counter << endl;
-		cout << "avg time " << (t*1.0)/counter << endl;
-		cout << endl;
+
+		cout << r2 << r3 << c;
+		cout << ", " << (given*1.0)/counter;
+		cout << ", " << (bt_used_counter*1.0)/counter;
+		cout << ", "<< (bt_counter*1.0)/counter;
+		cout << ", "<< bt_counter;
+		cout << ", " << (t*1.0)/counter << endl;
+		// cout << "settings " << r2 << r3 << c << endl;
+		// cout << "numsGiven " << (given*1.0)/counter << endl;
+		// cout << "\% of problems used " << (bt_used_counter*1.0)/counter << endl;
+		// cout << "avg bt "<< (bt_counter*1.0)/counter << endl;
+		// cout << "total bt "<< bt_counter << endl;
+		// cout << "avg time " << (t*1.0)/counter << endl;
+		// cout << endl;
 		file.close();
 	}
 	else cout << "Unable to open file"; 
@@ -705,7 +713,10 @@ int main(int argc, char const *argv[]) {
 	// testFile("easy.txt");
 	string filename (argv[1]);
 	testFile(filename,false,false,false);
+	testFile(filename,false,false,true);
 	testFile(filename,true,false,false);
+	testFile(filename,true,false,true);
+	testFile(filename,true,true,false);
 	testFile(filename,true,true,false);
 	testFile(filename,true,true,true);
 
