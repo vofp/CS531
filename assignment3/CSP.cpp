@@ -671,7 +671,7 @@ int testFile(string filename,bool r2, bool r3 , bool c){
 			if(r.num_backtrack != 0){
 				bt_used_counter++;
 			}
-			cout << r.numsGiven <<endl;
+			// cout << r.numsGiven <<endl;
 			given += r.numsGiven;
 			// r.printBoard();
 			counter++;
@@ -712,12 +712,12 @@ int main(int argc, char const *argv[]) {
 
 	// testFile("easy.txt");
 	string filename (argv[1]);
-	testFile(filename,false,false,false);
+	// testFile(filename,false,false,false);
 	testFile(filename,false,false,true);
-	testFile(filename,true,false,false);
+	// testFile(filename,true,false,false);
 	testFile(filename,true,false,true);
-	testFile(filename,true,true,false);
-	testFile(filename,true,true,false);
+	// testFile(filename,true,true,false);
+	// testFile(filename,true,true,false);
 	testFile(filename,true,true,true);
 
 	// d.applyR1();
