@@ -4,6 +4,7 @@ end_of_list.
 %
 formulas(sos).
 
+% axioms
 Succ(10,9).
 Succ(9,8).
 Succ(8,7).
@@ -18,8 +19,6 @@ Succ(2,1).
 Succ(1,0).
 %Succ(0,1).
 
-% axioms
-%Adjacent([x, y], [u, v]) <-> x = u & (Succ(y,v)) | y = v & (Succ(x, u)).
 Adjacent([x, y], [u, v]) <-> x = u & (Succ(y,v) | Succ(v,y)) | y = v & (Succ(x, u) | Succ(u, y)).
 
 At(Agent,x,z) & Breeze(z)	-> Breezy(x).
@@ -35,11 +34,7 @@ all x (exists y (Adjacent(x,y) & Pit(y)) <-> Breezy(x)).
 all x (exists y (Adjacent(x,y) & (At(Wumpus,y,z))) <-> Smelly(x)).
 (Visited(x,z) & t <= z) <-> (exists t At(Agent,x,t)).
 Unvisited(x) <-> -(exists t At(Agent,x,t)).
-% diagnostic rules instead of rules like the book uses?
-%At(Agent,x,z) & -Breeze(z) -> -Breezy(x).
-
 OK(x) <-> (-Pit(x) & -(At(Wumpus,x, z) & WumpusAlive(z))).
-%exists z Visited(x,z) -> OK(x).
 
 % actions
 At(Agent, [0,0], 0).
