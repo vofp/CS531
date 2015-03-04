@@ -179,21 +179,26 @@ class SmarterAgent(object):
 			agent.plan.append((GRAB,None))
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
 			agent.plan.append((CLIMB,None))
-		# move to unvisited
 		unvisited = []
+		# move to unvisited
 		if len(agent.plan) == 0:
 			unvisited = [(x,y) for x in xrange(size) for y in xrange(size) if askVisited(x,y)]
 			safeUnvisited = list(set(unvisited) & set(safe))
 			agent.plan.extend(planRoute((agent.x,agent.y),safeUnvisited,safe))
+		# shoot a wumpus
 		if len(agent.plan) == 0 and agent.hasArrow:
 			possibleWumpus = [(x,y) for x in xrange(size) for y in xrange(size) if not askNotWumpus(x,y)]
 			agent.plan.extend(planShot((agent.x,agent.y),possibleWumpus,safe))
+		# move to a cell that might be unsafe
 		if len(agent.plan) == 0:
 			notUnsafe = [(x,y) for x in xrange(size) for y in xrange(size) if not askNotOK(x,y,t)]
 			notUnsafeUnvisited = list(set(unvisited) & set(safe))
 			agent.plan.extend(planRoute((agent.x,agent.y),notUnsafeUnvisited,safe))
+		# nothing left to do, climb out 
 		if len(agent.plan) == 0:
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
+			agent.plan.append((CLIMB,None))
+		
 
 def planRoute(start, goals, nodes):
 	# rewrite search algorithms (breath-first, a*)
