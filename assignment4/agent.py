@@ -85,7 +85,7 @@ class domainAgent:
 		self.x = 0
 		self.y = 0
 
-	def takeAction():
+	def takeAction(self):
 		# plan is a list of actions
 		# action is a truple of a (int,int) that represent (action type, direction)
 		nextAction, direction = self.plan.pop(0)
@@ -198,7 +198,7 @@ class SmarterAgent(object):
 		if len(agent.plan) == 0:
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
 			agent.plan.append((CLIMB,None))
-		
+
 
 def planRoute(start, goals, nodes):
 	# rewrite search algorithms (breath-first, a*)
@@ -207,6 +207,72 @@ def planRoute(start, goals, nodes):
 	# return path as an array of [(MOVE,NORTH),(MOVE,EAST)...(MOVE,WEST)]
 	# cost is 1 per move
 	
+
+
+
+class InteractiveAgent(object):
+	"""
+	A hybrid agent that uses logic and a planner to work its way through the
+	wumpus world
+	"""
+	
+	def __init__(self):
+		"""
+		Initializes the agent
+		"""
+		self.agent = domainAgent()
+		
+		
+	def search(self, environment, logicEngine):
+		"""
+		Executes a random search for the gold
+		"""
+		self.agent.environ = environment
+		self.agent.logic = logicEngine
+		self.agent.actions = 0
+		self.agent.hasArrow = True
+		self.agent.success = False
+		dead = False
+		goldFound = False
+
+		return self.step()
+
+		return (success, dead, self.actions, self.hasArrow)
+	
+	def step(self):
+		agent = self.agent
+		r = agent.takeAction()
+		agent.scream = False
+		if(self.nextAction == MOVE and not r):
+			return (False, True, agent.actions, agent.hasArrow)
+		elif(self.nextAction == SHOOT):
+			agent.scream = r
+		elif(self.nextAction == CLIMB and r):
+			return(True,False,agent.actions,agent.hasArrow)
+		
+		percepts = agent.sense()
+		self.actionPlan(percepts)		
+
+	def actionPlan(self,percepts):
+		agent = self.agent
+		size = agent.environ.size
+		t = agent.actions
+		tellPrecepts(precepts,x,y,t)
+		# tellPhysics(t)
+		# get all safe tiles
+		while True:
+			r = input("[a]ction/[q]uery/[e]val: ")
+			if r[0] == 'a':
+				a = int(input("action int: "))
+				d = int(input("direction int: "))
+				agent.plan.append((a,d))
+				return
+			elif r[0] == 'q':
+				q = input("query: ")
+				agent.logic.query(q)
+			elif r[0] == 'e':
+				e = input("eval: ")
+				eval(e)
 
 
 
