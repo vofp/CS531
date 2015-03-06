@@ -169,12 +169,13 @@ class SmarterAgent(object):
 
 	def actionPlan(self,percepts):
 		agent = self.agent
+		l = agent.logic
 		size = agent.environ.size
 		t = agent.actions
-		tellPrecepts(precepts,x,y,t)
-		tellPhysics(t)
+		l.tellPrecepts(precepts,t)
+		# tellPhysics(t)
 		# get all safe tiles
-		safe = [(x,y) for x in xrange(size) for y in xrange(size) if askOK(x,y,t)]
+		safe = [(x,y) for x in xrange(size) for y in xrange(size) if l.askOK(x,y,t)]
 		if precepts[2]:
 			agent.plan.append((GRAB,None))
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
@@ -182,16 +183,16 @@ class SmarterAgent(object):
 		unvisited = []
 		# move to unvisited
 		if len(agent.plan) == 0:
-			unvisited = [(x,y) for x in xrange(size) for y in xrange(size) if askVisited(x,y)]
+			unvisited = [(x,y) for x in xrange(size) for y in xrange(size) if l.askVisited(x,y)]
 			safeUnvisited = list(set(unvisited) & set(safe))
 			agent.plan.extend(planRoute((agent.x,agent.y),safeUnvisited,safe))
 		# shoot a wumpus
 		if len(agent.plan) == 0 and agent.hasArrow:
-			possibleWumpus = [(x,y) for x in xrange(size) for y in xrange(size) if not askNotWumpus(x,y)]
+			possibleWumpus = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askNotWumpus(x,y)]
 			agent.plan.extend(planShot((agent.x,agent.y),possibleWumpus,safe))
 		# move to a cell that might be unsafe
 		if len(agent.plan) == 0:
-			notUnsafe = [(x,y) for x in xrange(size) for y in xrange(size) if not askNotOK(x,y,t)]
+			notUnsafe = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askNotOK(x,y,t)]
 			notUnsafeUnvisited = list(set(unvisited) & set(safe))
 			agent.plan.extend(planRoute((agent.x,agent.y),notUnsafeUnvisited,safe))
 		# nothing left to do, climb out 
