@@ -11,7 +11,8 @@ if __name__ == "__main__":
 	directory = "./test_maps/"
 
 	#create the agent
-	player = agent.RandomAgent()
+	# player = agent.RandomAgent()
+	player = agent.InteractiveAgent()
 
 	print "file name, is solveable?, has good start?, map size, success?, died?, num actions, has arrow"
 
