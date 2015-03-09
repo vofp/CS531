@@ -8,7 +8,7 @@ import logic
 #---------------------------------------MAIN--------------------------------------
 if __name__ == "__main__":
 
-	directory = "./test_maps/"
+	directory = "./maps/"
 
 	#create the agent
 	# player = agent.RandomAgent()

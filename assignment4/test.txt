@@ -1,1 +1,10 @@
-formulas(sos).man(x) -> mortal(x).man(george).end_of_list.formulas(goals).mortal(george).end_of_list.
+formulas(sos).
+Succ(2,1).
+Succ(1,0).
+Succ(0,1).
+Succ(1,2).
+Adjacent([x, y], [u, v]) <-> ((x = u & (Succ(y,v) | Succ(v,y))) | (y = v & (Succ(x, u) | Succ(u, x)))).
+end_of_list.
+formulas(goals).
+adjacent([0,1],[0,0]).
+end_of_list.

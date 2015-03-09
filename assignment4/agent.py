@@ -87,7 +87,7 @@ class domainAgent:
 
 	def takeAction(self):
 		# plan is a list of actions
-		# action is a truple of a (int,int) that represent (action type, direction)
+		# action is a tuple of a (int,int) that represent (action type, direction)
 		nextAction, direction = self.plan.pop(0)
 		self.lastAction = nextAction
 		if(nextAction == MOVE): # move
@@ -178,13 +178,14 @@ class SmarterAgent(object):
 		# get all safe tiles
 		safe = [(x,y) for x in xrange(size) for y in xrange(size) if l.askOK(x,y,t)]
 		if precepts[2]:
+			agent.plan = []
 			agent.plan.append((GRAB,None))
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
 			agent.plan.append((CLIMB,None))
 		unvisited = []
-		# move to unvisited
+		# move to next unvisited cell 
 		if len(agent.plan) == 0:
-			unvisited = [(x,y) for x in xrange(size) for y in xrange(size) if l.askVisited(x,y)]
+			unvisited = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askVisited(x,y)]
 			safeUnvisited = list(set(unvisited) & set(safe))
 			agent.plan.extend(planRoute((agent.x,agent.y),safeUnvisited,safe))
 		# shoot a wumpus
@@ -276,9 +277,9 @@ class InteractiveAgent(object):
 		# get all safe tiles
 		print percepts,
 		print " at ("+str(agent.x)+","+str(agent.y)+")"
-		self.printMap()
+		self.printMap(0)
 		while True:
-			r = raw_input("[a]ction/[q]uery/[e]val: ")
+			r = raw_input("[a]ction/[q]uery/[e]val/[p]rint: ")
 			print r
 			if r[0] == 'a':
 				a = int(raw_input("action int: "))
@@ -293,11 +294,17 @@ class InteractiveAgent(object):
 					print e
 			elif r[0] == 'e':
 				e = raw_input("eval: ")
-				eval(e)
+				try:
+					print eval(e)
+				except Exception, e2:
+					print e2
+			elif r[0] == 'p':
+				self.printMap(1)
 
-	def printMap(self):
+	def printMap(self,i):
 		agent = self.agent
 		env = agent.environ
+		l = agent.logic
 		for y in range(env.size-1, -1, -1):
 			for x in range(0, env.size):
 			
@@ -309,7 +316,12 @@ class InteractiveAgent(object):
 				print ("%s%s%s%s|" % ( "p" if pit else " ", "w" if wumpus else " ", "g" if gold else " " ,"a" if (agent.x == x and agent.y == y) else " ")),
 			
 			print ""
+			if i == 1:
+				for x in range(0, env.size):
+				
+					print ("%s%s%s%s|" % ( "O" if l.askOK(x,y,agent.actions) else " ", "N" if not l.askNotOK(x,y,agent.actions) else " ", "V" if not l.askVisited(x,y,agent.actions) else " " ,"w" if not l.askNotWumpus(x,y) else " ")),
+				
+				print ""
 			
 			#print a row seperator
 			print "____|_" * env.size
-
