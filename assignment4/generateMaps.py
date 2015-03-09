@@ -91,8 +91,9 @@ class Puzzle(object):
 
 #main!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #sizes = [10, 25, 50, 100]
-sizes = [4, 10, 25]
-quantityPer = 34
+# sizes = [4, 10, 25]
+sizes = [4]
+quantityPer = 1
 basePath = "./maps/"
 
 #generate all the puzzles
