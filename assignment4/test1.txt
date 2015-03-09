@@ -13,33 +13,25 @@ Succ(6,5).
 Succ(5,4).
 Succ(4,3).
 Succ(3,2).
-%Succ(2,3).
 Succ(2,1).
-%Succ(1,2).
 Succ(1,0).
-%Succ(0,1).
-
 Adjacent([x, y], [u, v]) <-> x = u & (Succ(y,v) | Succ(v,y)) | y = v & (Succ(x, u) | Succ(u, y)).
-
-At(Agent,x,z) & Breeze(z)	-> Breezy(x).
-At(Agent,x,z) & -Breeze(z)	-> -Breezy(x).
-
-At(Agent,x,z) & Stench(z)	-> Smelly(x).
-At(Agent,x,z) & -Stench(z)	-> -Smelly(x).
-
+Agent(x,z) & Breeze(z)	-> Breezy(x).
+Agent(x,z) & -Breeze(z)	-> -Breezy(x).
+Agent(x,z) & Stench(z)	-> Smelly(x).
+Agent(x,z) & -Stench(z)	-> -Smelly(x).
 -Breezy(x) & Adjacent(x,y) -> -Pit(y).
--Smelly(x) & Adjacent(x,y) -> -(At(Wumpus,y,z)).
-
+-Smelly(x) & Adjacent(x,y) -> -(Wumpus(y,z)).
 all x (exists y (Adjacent(x,y) & Pit(y)) <-> Breezy(x)).
-all x (exists y (Adjacent(x,y) & (At(Wumpus,y,z))) <-> Smelly(x)).
-(Visited(x,z) & t <= z) <-> (exists t At(Agent,x,t)).
-Unvisited(x) <-> -(exists t At(Agent,x,t)).
-OK(x) <-> (-Pit(x) & -(At(Wumpus,x, z) & WumpusAlive(z))).
+all x (exists y (Adjacent(x,y) & (Wumpus(y,z))) <-> Smelly(x)).
+(Visited(x,z) & t <= z) <-> (exists t Agent(x,t)).
+Unvisited(x) <-> -(exists t Agent(x,t)).
+OK(x) <-> (-Pit(x) & -(Wumpus(x, z) & WumpusAlive(z))).
 
 % actions
-At(Agent, [0,0], 0).
-At(Agent, [1,0], 1).
-At(Agent, [1,3], 2).
+Agent( [0,0], 0).
+Agent( [1,0], 1).
+Agent( [1,3], 2).
 
 -Breeze(0).
 -Stench(0).
@@ -52,14 +44,14 @@ end_of_list.
 
 formulas(goals).
 % test cases %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%At(Agent, [0,0], 0).		% True
-%At(Agent, [0,2], 0).		% Fail
+Agent( [0,0], 0).		% True
+%Agent( [0,2], 0).		% Fail
 
 %Adjacent([0,0], [0,1]).	% True
 %Adjacent([0,1], [0,0]).	% True
 %Adjacent([0,0], [0,3]).	% Fail
 
-%jBreeze(0).     			% Fail
+%Breeze(0).     			% Fail
 %Breeze(1).     			% True
 %Breeze(9999).     			% Fail
 

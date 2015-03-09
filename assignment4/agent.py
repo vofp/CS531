@@ -77,11 +77,11 @@ class domainAgent:
 		self.actions = 0
 		self.hasArrow = True
 		# 0:noop 1:move 2:shoot
-		self.nextAction = 0
+		self.lastAction = 0
 		self.direction = NORTH
 		self.success = False
 		self.scream = False
-		self.plan = []
+		self.plan = [(0,None)]
 		# self.position = (0,0)
 		self.x = 0
 		self.y = 0
@@ -90,6 +90,7 @@ class domainAgent:
 		# plan is a list of actions
 		# action is a truple of a (int,int) that represent (action type, direction)
 		nextAction, direction = self.plan.pop(0)
+		self.lastAction = nextAction
 		if(nextAction == MOVE): # move
 			x = self.x
 			y = self.y
@@ -101,14 +102,14 @@ class domainAgent:
 				x += 1 
 			elif(direction == SOUTH):
 				y -= 1
+			if(self.environ.isDeadly(x,y)):
+				self.actions += 1
+				return False
 			if(self.environ.canMove(x,y)):
 				self.x = x
 				self.y = y
 				self.actions += 1
 				return True 
-			if(self.environ.isDeadly(x,y))
-				self.actions += 1
-				return False
 			return True
 		elif(nextAction == SHOOT): # shoot arrow
 			if(hasArrow):
@@ -122,10 +123,9 @@ class domainAgent:
 			return self.x == 1 and self.y == 1
 		return False
 
-	def sense():
-		p = self.environ.sense(self.x,self.y)
-		p.append(self.scream)
-		return p
+	def sense(self):
+		(pit, wumpus, gold) = self.environ.sense(self.x,self.y)
+		return [pit, wumpus, gold,self.scream]
 
 
 class SmarterAgent(object):
@@ -145,6 +145,7 @@ class SmarterAgent(object):
 		"""
 		Executes a random search for the gold
 		"""
+		self.agent = domainAgent()
 		self.agent.environ = environment
 		self.agent.logic = logicEngine
 		self.agent.actions = 0
@@ -203,6 +204,7 @@ class SmarterAgent(object):
 
 
 def planRoute(start, goals, nodes):
+	pass
 	# rewrite search algorithms (breath-first, a*)
 	# start at starting position (start) 
 	# take action (NORTH, SOUTH, WEST, EAST) leading to a valid node in nodes
@@ -231,6 +233,7 @@ class InteractiveAgent(object):
 		"""
 		Executes a random search for the gold
 		"""
+		self.agent = domainAgent()
 		self.agent.environ = environment
 		self.agent.logic = logicEngine
 		self.agent.actions = 0
@@ -239,44 +242,77 @@ class InteractiveAgent(object):
 		dead = False
 		goldFound = False
 
-		return self.step()
+		r = self.step()
+		while not r:
+			print self.agent.actions
+			r = self.step()
 
-		return (success, dead, self.actions, self.hasArrow)
+		return r
 	
 	def step(self):
 		agent = self.agent
+		print "Take action ",
+		print agent.plan[0],
 		r = agent.takeAction()
+		print " resulting in ",
+		print r
 		agent.scream = False
-		if(self.nextAction == MOVE and not r):
+		if(agent.lastAction == MOVE and not r):
 			return (False, True, agent.actions, agent.hasArrow)
-		elif(self.nextAction == SHOOT):
+		elif(agent.lastAction == SHOOT):
 			agent.scream = r
-		elif(self.nextAction == CLIMB and r):
+		elif(agent.lastAction == CLIMB and r):
 			return(True,False,agent.actions,agent.hasArrow)
 		
 		percepts = agent.sense()
-		self.actionPlan(percepts)		
+		self.actionPlan(percepts)
+		return False
+
 
 	def actionPlan(self,percepts):
 		agent = self.agent
 		size = agent.environ.size
+		l = agent.logic
 		t = agent.actions
-		tellPrecepts(precepts,x,y,t)
+		l.tellPrecepts(percepts,agent.x,agent.y,t)
 		# tellPhysics(t)
 		# get all safe tiles
+		print percepts,
+		print " at ("+str(agent.x)+","+str(agent.y)+")"
+		self.printMap()
 		while True:
-			r = input("[a]ction/[q]uery/[e]val: ")
+			r = raw_input("[a]ction/[q]uery/[e]val: ")
+			print r
 			if r[0] == 'a':
-				a = int(input("action int: "))
-				d = int(input("direction int: "))
+				a = int(raw_input("action int: "))
+				d = int(raw_input("direction int: "))
 				agent.plan.append((a,d))
 				return
 			elif r[0] == 'q':
-				q = input("query: ")
-				agent.logic.query(q)
+				q = raw_input("query: ")
+				try:
+					print agent.logic.query(q)
+				except Exception, e:
+					print e
 			elif r[0] == 'e':
-				e = input("eval: ")
+				e = raw_input("eval: ")
 				eval(e)
 
-
+	def printMap(self):
+		agent = self.agent
+		env = agent.environ
+		for y in range(env.size-1, -1, -1):
+			for x in range(0, env.size):
+			
+				(pit,wumpus,gold) = (False, False, False)
+				
+				if (x,y) in env.map:
+					(pit,wumpus,gold) = env.map[(x,y)]
+				
+				print ("%s%s%s%s|" % ( "p" if pit else " ", "w" if wumpus else " ", "g" if gold else " " ,"a" if (agent.x == x and agent.y == y) else " ")),
+			
+			print ""
+			
+			#print a row seperator
+			print "____|_" * env.size
 

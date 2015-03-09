@@ -5,11 +5,15 @@ class FluentLogic(object):
 	Uses fluents to represent the wumpus world
 	"""
 	def __init__(self):
-		self.axioms = "formulas(sos).Succ(10,9).Succ(9,8).Succ(8,7).Succ(7,6).Succ(6,5).Succ(5,4).Succ(4,3).Succ(3,2).Succ(2,1).Succ(1,0).Adjacent([x, y], [u, v]) <-> x = u & (Succ(y,v) | Succ(v,y)) | y = v & (Succ(x, u) | Succ(u, y)).At(Agent,x,z) & Breeze(z)	-> Breezy(x).At(Agent,x,z) & -Breeze(z)	-> -Breezy(x).At(Agent,x,z) & Stench(z)	-> Smelly(x).At(Agent,x,z) & -Stench(z)	-> -Smelly(x).-Breezy(x) & Adjacent(x,y) -> -Pit(y).-Smelly(x) & Adjacent(x,y) -> -Wumpus(y).all x (exists y (Adjacent(x,y) & Pit(y)) <-> Breezy(x)).all x (exists y (Adjacent(x,y) & (Wumpus(y)) <-> Smelly(x)).(Visited(x,z) & t <= z) <-> (exists t At(Agent,x,t)).Unvisited(x) <-> -(exists t At(Agent,x,t)).OK(x,z) <-> (-Pit(x) & -Wumpus(x) & WumpusAlive(z)))."
+		self.axioms = "formulas(sos).Succ(10,9).Succ(9,8).Succ(8,7).Succ(7,6).Succ(6,5).Succ(5,4).Succ(4,3).Succ(3,2).Succ(2,1).Succ(1,0).Adjacent([x, y], [u, v]) <-> x = u & (Succ(y,v) | Succ(v,y)) | y = v & (Succ(x, u) | Succ(u, y)).Agent(x,z) & Breeze(z)	-> Breezy(x).Agent(x,z) & -Breeze(z)	-> -Breezy(x).Agent(x,z) & Stench(z)	-> Smelly(x).Agent(x,z) & -Stench(z)	-> -Smelly(x).-Breezy(x) & Adjacent(x,y) -> -Pit(y).-Smelly(x) & Adjacent(x,y) -> -(Wumpus(y,z)).all x (exists y (Adjacent(x,y) & Pit(y)) <-> Breezy(x)).all x (exists y (Adjacent(x,y) & (Wumpus(y,z))) <-> Smelly(x)).(Visited(x,z) & t <= z) <-> (exists t Agent(x,t)).Unvisited(x) <-> -(exists t Agent(x,t)).OK(x) <-> (-Pit(x) & -(Wumpus(x, z) & WumpusAlive(z)))."
 		# self.knowledge = "At(Agent, [0,0], 0).At(Agent, [1,0], 1).At(Agent, [1,3], 2).-Breeze(0).-Stench(0).Breeze(1).-Stench(1).-Breeze(2).-Stench(2)."
-		self.knowledge = "At(Agent, [0,0], 0)"
+		self.knowledge = "Agent([0,0], 0)."
 
-	def tellPrecepts(precepts,t):
+	def tellPrecepts(self,precepts,x,y,t):
+		x = str(x)
+		y = str(y)
+		t = str(t)
+		self.tell("Agent(["+x+","+y+"],"+t+").")
 		if precepts[0]:
 			self.tell("Breeze("+t+").")
 		else:
@@ -24,15 +28,26 @@ class FluentLogic(object):
 			self.tell("WumpusAlive("+t+").")
 
 	def askOK(self, x,y,t):
+		x = str(x)
+		y = str(y)
+		t = str(t)
 		return self.query("OK(["+x+","+y+"],"+t+").")
 
 	def askVisited(self, x,y,t):
+		x = str(x)
+		y = str(y)
+		t = str(t)
 		return self.query("Visited(["+x+","+y+"],"+t+").")
 
 	def askNotWumpus(self,x,y):
+		x = str(x)
+		y = str(y)
 		return self.query("-Wumpus(["+x+","+y+"]).")
 
 	def askNotOK(self,x,y,t):
+		x = str(x)
+		y = str(y)
+		t = str(t)
 		return self.query("-OK(["+x+","+y+"],"+t+").")
 
 	def tell(self, query):
@@ -53,9 +68,9 @@ class FluentLogic(object):
 
 		closing = "end_of_list."
 		goal = "formulas(goals)."
-		# print axioms + knowledge + closing + goal + query + closing
+		# print self.axioms + self.knowledge + closing + goal + query + closing
 		# give the process the body of logical rules and facts
-		process.communicate(self.axioms + knowledge + closing + goal + query + closing)
+		process.communicate(self.axioms + self.knowledge + closing + goal + query + closing)
 		# process.communicate(query)
 		
 		if process.returncode == 1:
