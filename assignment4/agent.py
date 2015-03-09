@@ -1,6 +1,7 @@
 import random
 import env
 from copy import deepcopy
+from astar import Astar
 
 NORTH = 0
 EAST = 1
@@ -207,7 +208,9 @@ def planRoute(start, goals, nodes):
 	# take action (NORTH, SOUTH, WEST, EAST) leading to a valid node in nodes
 	# return path as an array of [(MOVE,NORTH),(MOVE,EAST)...(MOVE,WEST)]
 	# cost is 1 per move
-	
+        graph, node astar.make_graph(map)
+        paths = astar.AStarGrid(graph)
+        paths.search(start, end)
 
 
 
