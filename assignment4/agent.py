@@ -210,7 +210,18 @@ def planRoute(start, goals, nodes):
 	# take action (NORTH, SOUTH, WEST, EAST) leading to a valid node in nodes
 	# return path as an array of [(MOVE,NORTH),(MOVE,EAST)...(MOVE,WEST)]
 	# cost is 1 per move
-        graph, node astar.make_graph(map)
+        Q = set()
+        v = set()
+        Q.push(start)
+        while Q is not empty:
+            v = Q.pop()
+            get_neighbors(v)
+            for w in v:
+                Q.push(w)
+                
+
+
+        graph, node astar.make_graph()
         paths = astar.AStarGrid(graph)
         paths.search(start, end)
 
