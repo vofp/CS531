@@ -1,7 +1,6 @@
 import random
 import env
 from copy import deepcopy
-from astar import Astar
 
 NORTH = 0
 EAST = 1
@@ -203,29 +202,53 @@ class SmarterAgent(object):
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
 			agent.plan.append((CLIMB,None))
 
-
-def planRoute(start, goals, nodes):
-	pass
+def planShot():
+   return []
+   
+def planRoute(start, goals, safe_nodes):
+	#pass
 	# rewrite search algorithms (breath-first, a*)
 	# start at starting position (start) 
 	# take action (NORTH, SOUTH, WEST, EAST) leading to a valid node in nodes
 	# return path as an array of [(MOVE,NORTH),(MOVE,EAST)...(MOVE,WEST)]
 	# cost is 1 per move
-        Q = set()
-        v = set()
-        Q.push(start)
-        while Q is not empty:
-            v = Q.pop()
-            get_neighbors(v)
-            for w in v:
-                Q.push(w)
+        open_set = []
+        closed_set = []
+        path = {}
+        open_set.append(start)
+        path[start] = []
+        while not len(open_set) == 0:
+            test_node = open_set.pop(0)
+            closed_set.append(test_node)
+            for d in range(4):
+                x,y = test_node
+                if(d == NORTH):
+                        y += 1 
+                elif(d == WEST):
+                        x -= 1 
+                elif(d == EAST):
+                        x += 1 
+                elif(d == SOUTH):
+                        y -= 1
+                w = (x,y)
+                if w not in safe_nodes:
+                    continue
+                if w not in closed_set:
+                    open_set.append(w)
+                    test = deepcopy(path[test_node])
+                    path[w] = test
+                    path[w].append((1,d))
+                print w, path
+                if w in goals:
+                    return path[w]
+
                 
+def get_neighbors(loc):
+        x, y = loc
+        return set((x,y+1),(x+1,y),(x-1,y),(x,y-1))
 
-
-        graph, node astar.make_graph()
-        paths = astar.AStarGrid(graph)
-        paths.search(start, end)
-
+        #list(set(get_neighbors) & set(safe_nodes))
+        #make a* and breadth-first functions
 
 
 class InteractiveAgent(object):
@@ -280,6 +303,39 @@ class InteractiveAgent(object):
 		self.actionPlan(percepts)
 		return False
 
+	def actionPlan2(self,percepts):
+		agent = self.agent
+		l = agent.logic
+		size = agent.environ.size
+		t = agent.actions
+		#l.tellPrecepts(precepts,t)
+		# tellPhysics(t)
+		# get all safe tiles
+		safe = [(x,y) for x in xrange(size) for y in xrange(size) if l.askOK(x,y,t)]
+		if percepts[2]:
+			agent.plan = []
+			agent.plan.append((GRAB,None))
+			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
+			agent.plan.append((CLIMB,None))
+		unvisited = []
+		# move to next unvisited cell 
+		if len(agent.plan) == 0:
+			unvisited = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askVisited(x,y,t)]
+			safeUnvisited = list(set(unvisited) & set(safe))
+			agent.plan.extend(planRoute((agent.x,agent.y),safeUnvisited,safe))
+		# shoot a wumpus
+		if len(agent.plan) == 0 and agent.hasArrow:
+			possibleWumpus = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askNotWumpus(x,y,t)]
+			agent.plan.extend(planShot((agent.x,agent.y),possibleWumpus,safe))
+		# move to a cell that might be unsafe
+		if len(agent.plan) == 0:
+			notUnsafe = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askNotOK(x,y,t)]
+			notUnsafeUnvisited = list(set(unvisited) & set(safe))
+			agent.plan.extend(planRoute((agent.x,agent.y),notUnsafeUnvisited,safe))
+		# nothing left to do, climb out 
+		if len(agent.plan) == 0:
+			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
+			agent.plan.append((CLIMB,None))
 
 	def actionPlan(self,percepts):
 		agent = self.agent
