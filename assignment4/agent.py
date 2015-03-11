@@ -202,16 +202,40 @@ class SmarterAgent(object):
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
 			agent.plan.append((CLIMB,None))
 
-def planShot():
-   return []
+def planShot(start, goals, safe_nodes):
+    idGoals = []
+    for g in goals:
+        idGoals.extend(get_neighbors(g))
+    idGoals = list(set(goals) & set(safe_nodes))
+    path = planRoute(start, idGoals, safe_nodes)
+    d = [0, 0, 0, 0]
+    for a in path:
+        action, direction = a
+        d[direction] += 1
+    dx = d[0]-d[2]
+    dy = d[1]-d[3]
+    x, y = start
+    x += dx
+    y += dy 
+    wumpus_loc = list[set(get_neighbors((x,y))) & set(goals)]
+    x2, y2 = wumpus_loc[0]
+    shot_dir = direction(x,y,x2,y2)
+    path.append((2, shot_dir))
+    return path
    
 def planRoute(start, goals, safe_nodes):
+    print "start ", start
+    print "goals ", goals
+    print "nodes ", safe_nodes
+    return branchbound(start, goals, safe_nodes)
 	#pass
 	# rewrite search algorithms (breath-first, a*)
 	# start at starting position (start) 
 	# take action (NORTH, SOUTH, WEST, EAST) leading to a valid node in nodes
 	# return path as an array of [(MOVE,NORTH),(MOVE,EAST)...(MOVE,WEST)]
 	# cost is 1 per move
+
+def branchbound(start, goals, safe_nodes):
         open_set = []
         closed_set = []
         path = {}
@@ -336,6 +360,8 @@ class InteractiveAgent(object):
 		if len(agent.plan) == 0:
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
 			agent.plan.append((CLIMB,None))
+                return agent.plan
+
 
 	def actionPlan(self,percepts):
 		agent = self.agent
