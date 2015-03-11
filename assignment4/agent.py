@@ -235,6 +235,11 @@ def planRoute(start, goals, safe_nodes):
 	# return path as an array of [(MOVE,NORTH),(MOVE,EAST)...(MOVE,WEST)]
 	# cost is 1 per move
 
+def astar(start, goals, safe_nodes):
+    pass
+    
+
+
 def branchbound(start, goals, safe_nodes):
         open_set = []
         closed_set = []
