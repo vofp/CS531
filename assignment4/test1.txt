@@ -18,7 +18,7 @@ Agent(x,z) & -Stench(z)	-> -Smelly(x).
 -Breezy(x) & Adjacent(x,y) -> -Pit(y).
 -Smelly(x) & Adjacent(x,y) -> -(Wumpus(y)).
 all x (exists y (Adjacent(x,y) & Pit(y)) <-> Breezy(x)).
-all x (exists y (Adjacent(x,y) & (Wumpus(y))) <-> Smelly(x)).
+all x (exists y (Adjacent(x,y) & Wumpus(y)) <-> Smelly(x)).
 (Visited(x,z) & t <= z) <-> (exists t Agent(x,t)).
 Unvisited(x) <-> -(exists t Agent(x,t)).
 OK(x,z) <-> (-Pit(x) & -(Wumpus(x) & WumpusAlive(z))) | Visited(x,z).

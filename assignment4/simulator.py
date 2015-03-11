@@ -3,7 +3,7 @@ import os.path
 
 import env
 import agent
-import logic
+import logic2 as logic
 
 #---------------------------------------MAIN--------------------------------------
 if __name__ == "__main__":
@@ -23,7 +23,7 @@ if __name__ == "__main__":
 		theMap = env.Environment(os.path.join(directory,aFile))
 	
 		#create the logic engine
-		kb = logic.FluentLogic()
+		kb = logic.FluentLogic(theMap.size)
 	
 		#run the agent and get the results
 		(success, died, actions, hasArrow) = player.search(theMap, kb)
