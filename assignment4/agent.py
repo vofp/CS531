@@ -185,12 +185,12 @@ class SmarterAgent(object):
 		unvisited = []
 		# move to next unvisited cell 
 		if len(agent.plan) == 0:
-			unvisited = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askVisited(x,y)]
+			unvisited = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askVisited(x,y,t)]
 			safeUnvisited = list(set(unvisited) & set(safe))
 			agent.plan.extend(planRoute((agent.x,agent.y),safeUnvisited,safe))
 		# shoot a wumpus
 		if len(agent.plan) == 0 and agent.hasArrow:
-			possibleWumpus = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askNotWumpus(x,y)]
+			possibleWumpus = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askNotWumpus(x,y,t)]
 			agent.plan.extend(planShot((agent.x,agent.y),possibleWumpus,safe))
 		# move to a cell that might be unsafe
 		if len(agent.plan) == 0:
@@ -319,7 +319,7 @@ class InteractiveAgent(object):
 			if i == 1:
 				for x in range(0, env.size):
 				
-					print ("%s%s%s%s|" % ( "O" if l.askOK(x,y,agent.actions) else " ", "N" if not l.askNotOK(x,y,agent.actions) else " ", "V" if not l.askVisited(x,y,agent.actions) else " " ,"w" if not l.askNotWumpus(x,y) else " ")),
+					print ("%s%s%s%s|" % ( "O" if l.askOK(x,y,agent.actions) else " ", "N" if not l.askNotOK(x,y,agent.actions) else " ", "V" if not l.askVisited(x,y,agent.actions) else " " ,"w" if not l.askNotWumpus(x,y,agent.actions) else " ")),
 				
 				print ""
 			
