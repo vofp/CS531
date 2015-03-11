@@ -1,0 +1,12 @@
+set(production).
+
+formulas(sos).
+Succ(x,y) -> (x = (y + 1)).
+(x < y) -> -Succ(x,y).
+
+end_of_list.
+
+formulas(goals).
+-Succ(2,0).
+
+end_of_list.

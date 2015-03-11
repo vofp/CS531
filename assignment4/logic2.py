@@ -4,11 +4,22 @@ class FluentLogic(object):
 	"""
 	Uses fluents to represent the wumpus world
 	"""
-	def __init__(self):
-		self.axioms = "formulas(sos).Succ(10,9).Succ(9,8).Succ(8,7).Succ(7,6).Succ(6,5).Succ(5,4).Succ(4,3).Succ(3,2).Succ(2,1).Succ(1,0).Adjacent([x, y], [u, v]) <-> ((x = u & (Succ(y,v) | Succ(v,y))) | (y = v & (Succ(x, u) | Succ(u, x)))).-Breezy(x) & Adjacent(x,y) -> -Pit(y).-Smelly(x) & Adjacent(x,y) -> -(Wumpus(y)).all x (exists y (Adjacent(x,y) & Pit(y)) <-> Breezy(x)).all x (exists y (Adjacent(x,y) & Wumpus(y)) <-> Smelly(x)).Visited(x,z)<-> Agent(x).OK(x) <-> (-Pit(x) & -(Wumpus(x) & WumpusAlive())) | Visited(x)."
+	def __init__(self,size):
+		self.axioms = "formulas(sos).Succ(x,y) <-> (x = (y + 1)).Adjacent([x, y], [u, v]) <-> ((x = u & (Succ(y,v) | Succ(v,y))) | (y = v & (Succ(x, u) | Succ(u, x)))).-Breezy(x) & Adjacent(x,y) -> -Pit(y).-Smelly(x) & Adjacent(x,y) -> -Wumpus(y).(Adjacent(x,y) & Pit(y)) <-> Breezy(x).(Adjacent(x,y) & Wumpus(y)) <-> Smelly(x).Visited(x)<-> Agent(x).OK(x) <-> (-Pit(x) & -(Wumpus(x) & WumpusAlive(1))) | Visited(x)."
 		# self.knowledge = "At(Agent, [0,0], 0).At(Agent, [1,0], 1).At(Agent, [1,3], 2).-Breeze(0).-Stench(0).Breeze(1).-Stench(1).-Breeze(2).-Stench(2)."
-		self.knowledge = "Agent([0,0], 0)."
-		self.WumpusAlive = "WumpusAlive()."
+		# for x in xrange(size-1):
+		# 	for y in xrange(size-1):
+		# 		if y != x+1:
+		# 			self.axioms += "-Succ("+str(y)+","+str(x)+")."
+		# 		else:
+		# 			self.axioms += "Succ("+str(x+1)+","+str(x)+")."
+
+		# print "Succ("+str(size)+","+str(size-1)+")."
+		# self.axioms += "-Succ("+str(size)+","+str(size-1)+")."
+		# self.axioms += "-Succ(0,-1)."
+
+		self.knowledge = "Agent([0,0])."
+		self.WumpusAlive = "WumpusAlive(1)."
 
 	def tellPrecepts(self,precepts,x,y,t):
 		x = str(x)
@@ -16,18 +27,18 @@ class FluentLogic(object):
 		t = str(t)
 		self.tell("Agent(["+x+","+y+"]).")
 		if precepts[0]:
-			self.tell("Breeze(["+x+","+y+"]).")
+			self.tell("Breezy(["+x+","+y+"]).")
 		else:
-			self.tell("-Breeze(["+x+","+y+"]).")
+			self.tell("-Breezy(["+x+","+y+"]).")
 		if precepts[1]:
-			self.tell("Stench(["+x+","+y+"]).")
+			self.tell("Smelly(["+x+","+y+"]).")
 		else:
-			self.tell("-Stench(["+x+","+y+"]).")
+			self.tell("-Smelly(["+x+","+y+"]).")
 		self.WumpusAlive = not precepts[3]
 		if precepts[3]:
-			self.WumpusAlive = "-WumpusAlive()."
+			self.WumpusAlive = "-WumpusAlive(1)."
 		else:
-			self.WumpusAlive = "WumpusAlive()."
+			self.WumpusAlive = "WumpusAlive(1)."
 
 	def askOK(self, x,y,t):
 		x = str(x)
@@ -67,7 +78,7 @@ class FluentLogic(object):
 
 		closing = "end_of_list."
 		goal = "formulas(goals)."
-		# print self.axioms + self.knowledge + closing + goal + query + closing
+		# print self.axioms + self.knowledge+ self.WumpusAlive + closing + goal + query + closing
 		# give the process the body of logical rules and facts
 		process.communicate(self.axioms + self.knowledge+ self.WumpusAlive + closing + goal + query + closing)
 		# process.communicate(query)

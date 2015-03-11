@@ -203,7 +203,7 @@ class SmarterAgent(object):
 			agent.plan.append((CLIMB,None))
 
 def planShot():
-   return []
+	return []
    
 def planRoute(start, goals, safe_nodes):
 	#pass
@@ -212,43 +212,43 @@ def planRoute(start, goals, safe_nodes):
 	# take action (NORTH, SOUTH, WEST, EAST) leading to a valid node in nodes
 	# return path as an array of [(MOVE,NORTH),(MOVE,EAST)...(MOVE,WEST)]
 	# cost is 1 per move
-        open_set = []
-        closed_set = []
-        path = {}
-        open_set.append(start)
-        path[start] = []
-        while not len(open_set) == 0:
-            test_node = open_set.pop(0)
-            closed_set.append(test_node)
-            for d in range(4):
-                x,y = test_node
-                if(d == NORTH):
-                        y += 1 
-                elif(d == WEST):
-                        x -= 1 
-                elif(d == EAST):
-                        x += 1 
-                elif(d == SOUTH):
-                        y -= 1
-                w = (x,y)
-                if w not in safe_nodes:
-                    continue
-                if w not in closed_set:
-                    open_set.append(w)
-                    test = deepcopy(path[test_node])
-                    path[w] = test
-                    path[w].append((1,d))
-                print w, path
-                if w in goals:
-                    return path[w]
+	open_set = []
+	closed_set = []
+	path = {}
+	open_set.append(start)
+	path[start] = []
+	while not len(open_set) == 0:
+		test_node = open_set.pop(0)
+		closed_set.append(test_node)
+		for d in range(4):
+			x,y = test_node
+			if(d == NORTH):
+					y += 1 
+			elif(d == WEST):
+					x -= 1 
+			elif(d == EAST):
+					x += 1 
+			elif(d == SOUTH):
+					y -= 1
+			w = (x,y)
+			if w not in safe_nodes:
+				continue
+			if w not in closed_set:
+				open_set.append(w)
+				test = deepcopy(path[test_node])
+				path[w] = test
+				path[w].append((1,d))
+			print w, path
+			if w in goals:
+				return path[w]
 
-                
+				
 def get_neighbors(loc):
-        x, y = loc
-        return set((x,y+1),(x+1,y),(x-1,y),(x,y-1))
+	x, y = loc
+	return set((x,y+1),(x+1,y),(x-1,y),(x,y-1))
 
-        #list(set(get_neighbors) & set(safe_nodes))
-        #make a* and breadth-first functions
+	#list(set(get_neighbors) & set(safe_nodes))
+	#make a* and breadth-first functions
 
 
 class InteractiveAgent(object):
