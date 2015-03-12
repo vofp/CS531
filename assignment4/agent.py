@@ -210,45 +210,75 @@ class SmarterAgent(object):
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
 			agent.plan.append((CLIMB,None))
 
-def planShot():
-	return []
+def planShot(start, goals, safe_nodes):
+    idGoals = []
+    for g in goals:
+        idGoals.extend(get_neighbors(g))
+    idGoals = list(set(goals) & set(safe_nodes))
+    path = planRoute(start, idGoals, safe_nodes)
+    d = [0, 0, 0, 0]
+    for a in path:
+        action, direction = a
+        d[direction] += 1
+    dx = d[0]-d[2]
+    dy = d[1]-d[3]
+    x, y = start
+    x += dx
+    y += dy 
+    wumpus_loc = list[set(get_neighbors((x,y))) & set(goals)]
+    x2, y2 = wumpus_loc[0]
+    shot_dir = direction(x,y,x2,y2)
+    path.append((2, shot_dir))
+    return path
+
    
 def planRoute(start, goals, safe_nodes):
+    print "start ", start
+    print "goals ", goals
+    print "nodes ", safe_nodes
+    return branchbound(start, goals, safe_nodes)
 	#pass
 	# rewrite search algorithms (breath-first, a*)
 	# start at starting position (start) 
 	# take action (NORTH, SOUTH, WEST, EAST) leading to a valid node in nodes
 	# return path as an array of [(MOVE,NORTH),(MOVE,EAST)...(MOVE,WEST)]
 	# cost is 1 per move
-	open_set = []
-	closed_set = []
-	path = {}
-	open_set.append(start)
-	path[start] = []
-	while not len(open_set) == 0:
-		test_node = open_set.pop(0)
-		closed_set.append(test_node)
-		for d in range(4):
-			x,y = test_node
-			if(d == NORTH):
-					y += 1 
-			elif(d == WEST):
-					x -= 1 
-			elif(d == EAST):
-					x += 1 
-			elif(d == SOUTH):
-					y -= 1
-			w = (x,y)
-			if w not in safe_nodes:
-				continue
-			if w not in closed_set:
-				open_set.append(w)
-				test = deepcopy(path[test_node])
-				path[w] = test
-				path[w].append((1,d))
-			print w, path
-			if w in goals:
-				return path[w]
+
+def astar(start, goals, safe_nodes):
+    pass
+    
+
+
+def branchbound(start, goals, safe_nodes):
+        open_set = []
+        closed_set = []
+        path = {}
+        open_set.append(start)
+        path[start] = []
+        while not len(open_set) == 0:
+            test_node = open_set.pop(0)
+            closed_set.append(test_node)
+            for d in range(4):
+                x,y = test_node
+                if(d == NORTH):
+                        y += 1 
+                elif(d == WEST):
+                        x -= 1 
+                elif(d == EAST):
+                        x += 1 
+                elif(d == SOUTH):
+                        y -= 1
+                w = (x,y)
+                if w not in safe_nodes:
+                    continue
+                if w not in closed_set:
+                    open_set.append(w)
+                    test = deepcopy(path[test_node])
+                    path[w] = test
+                    path[w].append((1,d))
+                print w, path
+                if w in goals:
+                    return path[w]
 
 				
 def get_neighbors(loc):
@@ -344,6 +374,8 @@ class InteractiveAgent(object):
 		if len(agent.plan) == 0:
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
 			agent.plan.append((CLIMB,None))
+                return agent.plan
+
 
 	def actionPlan(self,percepts):
 		agent = self.agent
