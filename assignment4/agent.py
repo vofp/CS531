@@ -153,31 +153,39 @@ class SmarterAgent(object):
 		dead = False
 		goldFound = False
 
-		return self.step()
+		r = self.step()
 
-		return (success, dead, self.actions, self.hasArrow)
+		while not r:
+			r = self.step()
+
+		return r
 	
 	def step(self):
 		agent = self.agent
 		r = agent.takeAction()
 		agent.scream = False
-		if(self.nextAction == 1 and not r):
+		if(agent.lastAction == MOVE and not r):
 			return (False, True, agent.actions, agent.hasArrow)
-		elif(self.nextAction == 2):
+		elif(agent.lastAction == SHOOT):
 			agent.scream = r
+		elif(agent.lastAction == CLIMB and r):
+			return(True,False,agent.actions,agent.hasArrow)
+		elif(agent.lastAction == GRAB and r): # grab gold
+			agent.environ.map[(agent.x,agent.y)][2] = False
 		percepts = agent.sense()
-		self.actionPlan(percepts)		
+		self.actionPlan(percepts)
+		return False		
 
 	def actionPlan(self,percepts):
 		agent = self.agent
 		l = agent.logic
 		size = agent.environ.size
 		t = agent.actions
-		l.tellPrecepts(precepts,t)
+		l.tellPrecepts(percepts,agent.x,agent.y,t)
 		# tellPhysics(t)
 		# get all safe tiles
 		safe = [(x,y) for x in xrange(size) for y in xrange(size) if l.askOK(x,y,t)]
-		if precepts[2]:
+		if percepts[2]:
 			agent.plan = []
 			agent.plan.append((GRAB,None))
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))

@@ -1,12 +1,20 @@
 set(production).
 
 formulas(sos).
-Succ(x,y) -> (x = (y + 1)).
-(x < y) -> -Succ(x,y).
+Visited(x) <-> Agent(x).
+OK(x) <-> (-Pit(x) & -(Wumpus(x) & WumpusAlive(1))) | Visited(x).
+Pit([x,y]) -> Breezy([x,y + -1]) & Breezy([x,y + 1]) & Breezy([x + -1,y]) & Breezy([x + 1,y]).
+Breezy([x,y]) <-> Pit([x,y + -1]) | Pit([x,y + 1]) | Pit([x + -1,y]) | Pit([x + 1,y]).
+%Agent([0,0]).
+%-Agent([0,1]).
+%-WumpusAlive(1).
+Breezy([0,0]).
 
 end_of_list.
 
 formulas(goals).
--Succ(2,0).
+Pit([0,1]).
+%Succ(1,0).
+%Adjacent([0, 0], [0, 1]).
 
 end_of_list.
