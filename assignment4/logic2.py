@@ -1,11 +1,12 @@
 import subprocess
+import threading
 
 class FluentLogic(object):
 	"""
 	Uses fluents to represent the wumpus world
 	"""
 	def __init__(self,size):
-		self.axioms = "formulas(sos).Adjacent([x, y], [u, v]) <-> ((x = u & (Succ(y,v) | Succ(v,y))) | (y = v & (Succ(x, u) | Succ(u, x)))).-Breezy(x) & Adjacent(x,y) -> -Pit(y).-Smelly(x) & Adjacent(x,y) -> -Wumpus(y).all x (exists y (Adjacent(x,y) & Pit(y)) <-> Breezy(x)).all x (exists y (Adjacent(x,y) & Wumpus(y)) <-> Smelly(x)).Visited(x) <-> Agent(x).Agent(x) -> -Pit(x).Agent(x) -> -Wumpus(x).OK(x) <-> (-Pit(x) & -(Wumpus(x) & WumpusAlive(1))) | Visited(x).Breezy([x,y]) -> Pit([x,y + -1]) | Pit([x,y + 1]) | Pit([x + -1,y]) | Pit([x + 1,y]).all x all y (Breezy([x,y]) <-> exists z ((Pit([x,z]) & (z = y+ -1 | z = y+ 1)) | (Pit([z,y]) & (z = x+ -1 | z = x+ 1)) )   )."
+		self.axioms = "formulas(sos).Adjacent([x, y], [u, v]) <-> ((x = u & (Succ(y,v) | Succ(v,y))) | (y = v & (Succ(x, u) | Succ(u, x)))).-Breezy(x) & Adjacent(x,y) -> -Pit(y).-Smelly(x) & Adjacent(x,y) -> -Wumpus(y).all x (exists y (Adjacent(x,y) & Pit(y)) <-> Breezy(x)).all x (exists y (Adjacent(x,y) & Wumpus(y)) <-> Smelly(x)).Visited(x) <-> Agent(x).Agent(x) -> -Pit(x).Agent(x) -> -Wumpus(x).OK(x) <-> (-Pit(x) & -(Wumpus(x) & WumpusAlive(1))) | Visited(x)."
 
 		# all x (exists y (Adjacent(x,y) & Pit(y)) <-> Breezy(x))
 
@@ -23,14 +24,14 @@ class FluentLogic(object):
 			self.axioms += "-Wumpus(["+str(x)+",-1])."
 			self.axioms += "-Wumpus(["+str(size)+","+str(x)+"])."
 			self.axioms += "-Wumpus(["+str(x)+","+str(size)+"])."
-			for y in xrange(size-1):
-				if y != x+1:
-					self.axioms += "-Succ("+str(y)+","+str(x)+")."
-				else:
-					self.axioms += "Succ("+str(x+1)+","+str(x)+")."
+		# 	for y in xrange(size-1):
+		# 		if y != x+1:
+		# 			self.axioms += "-Succ("+str(y)+","+str(x)+")."
+		# 		else:
+		# 			self.axioms += "Succ("+str(x+1)+","+str(x)+")."
 
-		self.axioms += "-Succ("+str(size)+","+str(size-1)+")."
-		self.axioms += "-Succ(0,-1)."
+		# self.axioms += "-Succ("+str(size)+","+str(size-1)+")."
+		# self.axioms += "-Succ(0,-1)."
 
 		for x in xrange(size-1):
 			for y in xrange(size-1):
@@ -43,6 +44,7 @@ class FluentLogic(object):
 		self.WumpusAlive = "WumpusAlive(1)."
 		self.agent = {}
 		self.count = 0
+		self.safe = []
 
 	def tellPrecepts(self,precepts,x,y,t):
 		x = str(x)
@@ -70,7 +72,12 @@ class FluentLogic(object):
 		y = str(y)
 		if (x,y) in self.agent:
 			return True
-		return self.query("OK(["+x+","+y+"]).")
+		if (x,y) in self.safe:
+			return True
+		r = self.query("OK(["+x+","+y+"]).")
+		if r:
+			self.safe.append((x,y))
+		return r
 
 	def askVisited(self, x,y,t):
 		x = str(x)
@@ -107,23 +114,35 @@ class FluentLogic(object):
 		"""
 		Runs the given query, returning true if the query is true
 		"""
+
+		def target():
 		#start the process
-		process = subprocess.Popen("./prover9", stdin=subprocess.PIPE,\
-		stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		
+			self.process = subprocess.Popen("./prover9", stdin=subprocess.PIPE,\
+			stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+			
 
 
-		closing = "end_of_list."
-		goal = "formulas(goals)."
-		# print self.axioms + self.knowledge+ self.WumpusAlive + closing + goal + query + closing
-		# give the process the body of logical rules and facts
-		process.communicate(self.axioms + self.knowledge+ self.WumpusAlive + closing + goal + query + closing)
-		# process.communicate(query)
+			closing = "end_of_list."
+			goal = "formulas(goals)."
+			# print query
+			# print self.axioms + self.knowledge+ self.WumpusAlive + closing + goal + query + closing
+			# give the process the body of logical rules and facts
+			self.process.communicate(self.axioms + self.knowledge+ self.WumpusAlive + closing + goal + query + closing)
+			# process.communicate(query)
 		
-		if process.returncode == 1:
+		thread = threading.Thread(target=target)
+		thread.start()
+
+		thread.join(5)
+		if thread.is_alive():
+			self.process.terminate()
+			thread.join()
+			return False
+
+		if self.process.returncode == 1:
 			print query
 			raise Exception("syntax error!")
 		
 		#prover 9 only exits with status 0 when the query was found to be true
-		return process.returncode == 0
+		return self.process.returncode == 0
 

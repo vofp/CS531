@@ -15,7 +15,7 @@ def randomSquare(size):
 	y = 0
 
 	#the starting square is not a valid choice	
-	while x == 0 and y ==0:
+	while (x == 0 and y ==0) or (x == 1 and y ==0) or (x == 0 and y ==1) or (x == 1 and y ==1):
 		x = random.randint(0,size-1)
 		y = random.randint(0,size-1)
 	
@@ -46,7 +46,7 @@ class Puzzle(object):
 			for j in range(self.size):
 			
 				#roll for a pit
-				if random.random() <= .2 and not (i == 0 and j == 0) :
+				if random.random() <= .2 and not ((i == 0 and j ==0) or (i == 1 and j ==0) or (i == 0 and j ==1) or (i == 1 and j ==1)) :
 					puzzle.addPit(i,j)
 				
 		#pick a square for the wumpus
@@ -92,8 +92,8 @@ class Puzzle(object):
 #main!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #sizes = [10, 25, 50, 100]
 # sizes = [4, 10, 25]
-sizes = [4]
-quantityPer = 1
+sizes = [4,5]
+quantityPer = 10
 basePath = "./maps/"
 
 #generate all the puzzles

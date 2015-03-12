@@ -84,11 +84,16 @@ class domainAgent:
 		# self.position = (0,0)
 		self.x = 0
 		self.y = 0
+		self.searchCells = []
 
 	def takeAction(self):
 		# plan is a list of actions
 		# action is a tuple of a (int,int) that represent (action type, direction)
+		if len(self.plan) == 0:
+			self.lastAction = 0
+			return False
 		nextAction, direction = self.plan.pop(0)
+		# print "Action: ", nextAction, direction
 		self.lastAction = nextAction
 		if(nextAction == MOVE): # move
 			x = self.x
@@ -111,14 +116,16 @@ class domainAgent:
 				return True 
 			return True
 		elif(nextAction == SHOOT): # shoot arrow
-			if(hasArrow):
+			if(self.hasArrow):
 				self.hasArrow = False
 				self.actions += 1
-				return self.environ.shootArrow(self.x,self,y,direction)
+				return self.environ.shootArrow(self.x,self.y,direction)
 			return False
 		elif(nextAction == GRAB): # grab gold
+			self.actions += 1
 			return self.environ.map[(self.x,self.y)][2]
 		elif(nextAction == CLIMB): # climb out
+			self.actions += 1
 			return self.x == 1 and self.y == 1
 		return False
 
@@ -154,8 +161,8 @@ class SmarterAgent(object):
 		goldFound = False
 
 		r = self.step()
-
 		while not r:
+			print self.agent.actions
 			r = self.step()
 
 		return r
@@ -210,6 +217,22 @@ class SmarterAgent(object):
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
 			agent.plan.append((CLIMB,None))
 
+def directionf(x1, y1, x2, y2):
+	"""
+	Returns the direction (x2, y2) is relative to (x1, y1) or none if they
+	are not in a straight line from each other
+	"""
+	if x1 == x2 and y2 > y1:
+		return NORTH
+	elif x1 == x2 and y2 < y1:
+		return SOUTH
+	elif y1 == y2 and x2> x1:
+		return EAST
+	elif y1 == y2 and x2 < x1:
+		return WEST
+	else:	
+		return None
+
 def planShot(start, goals, safe_nodes):
     idGoals = []
     for g in goals:
@@ -225,17 +248,19 @@ def planShot(start, goals, safe_nodes):
     x, y = start
     x += dx
     y += dy 
-    wumpus_loc = list[set(get_neighbors((x,y))) & set(goals)]
+    wumpus_loc = list(get_neighbors((x,y)) & set(goals))
+    if len(wumpus_loc) == 0:
+    	return []
     x2, y2 = wumpus_loc[0]
-    shot_dir = direction(x,y,x2,y2)
+    shot_dir = directionf(x,y,x2,y2)
     path.append((2, shot_dir))
     return path
 
    
 def planRoute(start, goals, safe_nodes):
-    print "start ", start
-    print "goals ", goals
-    print "nodes ", safe_nodes
+    # print "start ", start
+    # print "goals ", goals
+    # print "nodes ", safe_nodes
     return branchbound(start, goals, safe_nodes)
 	#pass
 	# rewrite search algorithms (breath-first, a*)
@@ -250,40 +275,41 @@ def astar(start, goals, safe_nodes):
 
 
 def branchbound(start, goals, safe_nodes):
-        open_set = []
-        closed_set = []
-        path = {}
-        open_set.append(start)
-        path[start] = []
-        while not len(open_set) == 0:
-            test_node = open_set.pop(0)
-            closed_set.append(test_node)
-            for d in range(4):
-                x,y = test_node
-                if(d == NORTH):
-                        y += 1 
-                elif(d == WEST):
-                        x -= 1 
-                elif(d == EAST):
-                        x += 1 
-                elif(d == SOUTH):
-                        y -= 1
-                w = (x,y)
-                if w not in safe_nodes:
-                    continue
-                if w not in closed_set:
-                    open_set.append(w)
-                    test = deepcopy(path[test_node])
-                    path[w] = test
-                    path[w].append((1,d))
-                print w, path
-                if w in goals:
-                    return path[w]
+    open_set = []
+    closed_set = []
+    path = {}
+    open_set.append(start)
+    path[start] = []
+    while not len(open_set) == 0:
+        test_node = open_set.pop(0)
+        closed_set.append(test_node)
+        for d in range(4):
+            x,y = test_node
+            if(d == NORTH):
+                    y += 1 
+            elif(d == WEST):
+                    x -= 1 
+            elif(d == EAST):
+                    x += 1 
+            elif(d == SOUTH):
+                    y -= 1
+            w = (x,y)
+            if w not in safe_nodes:
+                continue
+            if w not in closed_set:
+                open_set.append(w)
+                test = deepcopy(path[test_node])
+                path[w] = test
+                path[w].append((1,d))
+            # print w, path
+            if w in goals:
+                return path[w]
+    return []
 
 				
 def get_neighbors(loc):
 	x, y = loc
-	return set((x,y+1),(x+1,y),(x-1,y),(x,y-1))
+	return set([(x,y+1),(x+1,y),(x-1,y),(x,y-1)])
 
 	#list(set(get_neighbors) & set(safe_nodes))
 	#make a* and breadth-first functions
@@ -317,28 +343,28 @@ class InteractiveAgent(object):
 
 		r = self.step()
 		while not r:
-			print self.agent.actions
+			# print self.agent.actions
 			r = self.step()
 
 		return r
 	
 	def step(self):
 		agent = self.agent
-		print "Take action ",
-		print agent.plan[0],
 		r = agent.takeAction()
-		print " resulting in ",
-		print r
 		agent.scream = False
 		if(agent.lastAction == MOVE and not r):
-			return (False, True, agent.actions, agent.hasArrow)
+			return (False, True, agent.actions, agent.hasArrow,agent.logic.count,agent.logic.WumpusAlive)
 		elif(agent.lastAction == SHOOT):
 			agent.scream = r
 		elif(agent.lastAction == CLIMB and r):
-			return(True,False,agent.actions,agent.hasArrow)
-		
+			return(True,False,agent.actions,agent.hasArrow,agent.logic.count,agent.logic.WumpusAlive)
+		elif(agent.lastAction == GRAB and r): # grab gold
+			m = agent.environ.map[(agent.x,agent.y)]
+			agent.environ.map[(agent.x,agent.y)] = (m[0],m[1],False)
 		percepts = agent.sense()
-		self.actionPlan(percepts)
+		r = self.actionPlan2(percepts)
+		if not r:
+			return (False, False, agent.actions, agent.hasArrow,agent.logic.count,agent.logic.WumpusAlive)
 		return False
 
 	def actionPlan2(self,percepts):
@@ -346,35 +372,52 @@ class InteractiveAgent(object):
 		l = agent.logic
 		size = agent.environ.size
 		t = agent.actions
+		l.tellPrecepts(percepts,agent.x,agent.y,t)
+		self.printMap(0)
+		print ""
 		#l.tellPrecepts(precepts,t)
 		# tellPhysics(t)
 		# get all safe tiles
-		safe = [(x,y) for x in xrange(size) for y in xrange(size) if l.askOK(x,y,t)]
+		agent.searchCells.extend(list(get_neighbors((agent.x,agent.y))))
+		safe = []
 		if percepts[2]:
 			agent.plan = []
 			agent.plan.append((GRAB,None))
+			safe = [(x,y) for x in xrange(size) for y in xrange(size) if (x,y) in agent.searchCells if l.askOK(x,y,t)]
+			safe.append((1,1))
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
 			agent.plan.append((CLIMB,None))
+			return agent.plan
 		unvisited = []
 		# move to next unvisited cell 
 		if len(agent.plan) == 0:
-			unvisited = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askVisited(x,y,t)]
-			safeUnvisited = list(set(unvisited) & set(safe))
+			print 1
+			safe = [(x,y) for x in xrange(size) for y in xrange(size) if (x,y) in agent.searchCells if l.askOK(x,y,t)]
+			unvisited = [(x,y) for x in xrange(size) for y in xrange(size) if (x,y) in agent.searchCells if (x,y) in safe if not l.askVisited(x,y,t)]
+			# safeUnvisited = list(set(unvisited) & set(safe))
+			safeUnvisited = unvisited
 			agent.plan.extend(planRoute((agent.x,agent.y),safeUnvisited,safe))
 		# shoot a wumpus
 		if len(agent.plan) == 0 and agent.hasArrow:
+			print 2
 			possibleWumpus = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askNotWumpus(x,y,t)]
 			agent.plan.extend(planShot((agent.x,agent.y),possibleWumpus,safe))
 		# move to a cell that might be unsafe
 		if len(agent.plan) == 0:
-			notUnsafe = [(x,y) for x in xrange(size) for y in xrange(size) if not l.askNotOK(x,y,t)]
+			print 3
+			notUnsafe = [(x,y) for x in xrange(size) for y in xrange(size) if (x,y) in agent.searchCells if (x,y) in unvisited if not l.askNotOK(x,y,t)]
 			notUnsafeUnvisited = list(set(unvisited) & set(safe))
+			# notUnsafeUnvisited = notUnsafe
 			agent.plan.extend(planRoute((agent.x,agent.y),notUnsafeUnvisited,safe))
 		# nothing left to do, climb out 
 		if len(agent.plan) == 0:
+			print 4
+			safe.append((1,1))
 			agent.plan.extend(planRoute((agent.x,agent.y),[(1,1)],safe))
+			if len(agent.plan) == 0:
+				return False
 			agent.plan.append((CLIMB,None))
-                return agent.plan
+		return agent.plan
 
 
 	def actionPlan(self,percepts):
@@ -388,28 +431,32 @@ class InteractiveAgent(object):
 		print percepts,
 		print " at ("+str(agent.x)+","+str(agent.y)+")"
 		self.printMap(0)
-		while True:
-			r = raw_input("[a]ction/[q]uery/[e]val/[p]rint: ")
-			print r
-			if r[0] == 'a':
-				a = int(raw_input("action int: "))
-				d = int(raw_input("direction int: "))
-				agent.plan.append((a,d))
-				return
-			elif r[0] == 'q':
-				q = raw_input("query: ")
-				try:
-					print agent.logic.query(q)
-				except Exception, e:
-					print e
-			elif r[0] == 'e':
-				e = raw_input("eval: ")
-				try:
-					print eval(e)
-				except Exception, e2:
-					print e2
-			elif r[0] == 'p':
-				self.printMap(1)
+		print self.actionPlan2(percepts)
+		return
+
+		r = raw_input("[a]ction/[q]uery/[e]val/[p]rint: ")
+		print r
+		if r[0] == 'a':
+			a = int(raw_input("action int: "))
+			d = int(raw_input("direction int: "))
+			agent.plan.append((a,d))
+			return
+		elif r[0] == 'q':
+			q = raw_input("query: ")
+			try:
+				print agent.logic.query(q)
+			except Exception, e:
+				print e
+		elif r[0] == 'r':
+			print self.actionPlan2(percepts)
+		elif r[0] == 'e':
+			e = raw_input("eval: ")
+			try:
+				print eval(e)
+			except Exception, e2:
+				print e2
+		elif r[0] == 'p':
+			self.printMap(1)
 
 	def printMap(self,i):
 		agent = self.agent
